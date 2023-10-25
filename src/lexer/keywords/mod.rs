@@ -1,0 +1,18 @@
+//! Constants containing all the keywords defined in the asciimath grammar.
+
+use super::token::TokenKind;
+
+mod macros;
+
+pub mod arrows;
+pub mod functions;
+pub mod greek;
+
+pub(crate) trait Keyword {
+    const MAX_LEN: usize;
+    const MIN_LEN: usize;
+
+    type Kind: Into<TokenKind>;
+
+    fn get(key: &str) -> Option<Self::Kind>;
+}
