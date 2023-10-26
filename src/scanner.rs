@@ -53,10 +53,6 @@ impl<'src> Symbol<'src> {
         matches!(self.content, ".")
     }
 
-    pub(crate) fn is_ascii_letter(&self) -> bool {
-        self.content.chars().all(|c| c.is_ascii_alphabetic())
-    }
-
     pub(crate) fn is_whitespace(&self) -> bool {
         self.content.chars().all(|c| c.is_whitespace())
     }

@@ -108,6 +108,22 @@ macro_rules! generate_impl {
             fn get(key: &str) -> Option<Self::Kind> {
                 map().get(key).copied()
             }
+
+            fn starts_with(symbol: $crate::scanner::Symbol<'_>) -> bool {
+                use std::sync::OnceLock;
+                static FIRST_SYMBOLS: OnceLock<Vec<&str>> = OnceLock::new();
+
+                FIRST_SYMBOLS
+                    .get_or_init(|| {
+                        self::LITERALS
+                            .iter()
+                            .flat_map(|s| s.iter())
+                            .filter_map(|lit| lit.split("").nth(1))
+                            .collect()
+                    })
+                    .iter()
+                    .any(|&first_sym| first_sym == symbol.content)
+            }
         }
     };
 }

@@ -1,5 +1,7 @@
 //! Constants containing all the keywords defined in the asciimath grammar.
 
+use crate::scanner::Symbol;
+
 use super::token::TokenKind;
 
 mod macros;
@@ -15,4 +17,5 @@ pub(crate) trait Keyword {
     type Kind: Into<TokenKind>;
 
     fn get(key: &str) -> Option<Self::Kind>;
+    fn starts_with(symbol: Symbol<'_>) -> bool;
 }
