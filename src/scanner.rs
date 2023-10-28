@@ -114,6 +114,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(debug_assertions)]
     #[should_panic]
     fn mismatched_symbols() {
         let symbols = vec![
