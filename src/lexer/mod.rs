@@ -1,12 +1,13 @@
 //! Tokens, lexer and other helper types and functions for tokenization of asciimath input.
 
+mod next_impl;
 mod token;
 
 use crate::scanner::{Scan, Symbol};
 
 use token::{Token, TokenKind};
 
-use self::keywords::{arrows::Arrows, functions::Functions, greek::Greeks, Keyword};
+use self::keywords::{arrows::Arrows, functions::Functions, greek::Greeks, Keyword, KeywordKind};
 
 mod keywords;
 
@@ -16,6 +17,11 @@ struct Span {
     end: usize,
 }
 
+/// Iterator that finds and returns tokens in AsciiMath input.
+///
+/// In cases where a token is prefix of other token, the longer token is given precedence. For
+/// example: 'g' is function g, and 'gamma' is greek letter. In order to correctly identify the
+/// greek letter, the longer token must have precedence.
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub(crate) struct TokenIterator<'src> {
     src: Vec<Symbol<'src>>,
@@ -49,6 +55,7 @@ impl<'src> TokenIterator<'src> {
         }
     }
 
+    /// Identifies a number in AsciiMath input, like 42, 42.24, .3 etc.
     fn lex_number(&self) -> Option<(Token<'src>, usize)> {
         let mut dot_seen = false;
 
@@ -69,16 +76,21 @@ impl<'src> TokenIterator<'src> {
             curr += 1;
         }
 
+        if start == curr {
+            return None;
+        }
+
         let content = Symbol::as_str(self.src.get(start..curr)?)?;
         let kind = TokenKind::Number;
 
         Some((Token::new(content, kind), curr))
     }
 
-    fn lex_keyword<K>(&self) -> Option<(Token<'src>, usize)>
+    /// Lexes a keyword with a given minimum length (or default for the given keyword if that is
+    /// longer)
+    fn lex_keyword<K>(&self, min_len: usize) -> Option<(Token<'src>, usize)>
     where
         K: Keyword,
-        K::Kind: std::fmt::Debug,
     {
         if let Some(sym) = self.src.get(self.curr) {
             if !<K as Keyword>::starts_with(*sym) {
@@ -87,8 +99,10 @@ impl<'src> TokenIterator<'src> {
             }
         }
 
+        let min_len = K::MIN_LEN.max(min_len);
+
         let start = self.curr;
-        let mut curr = self.curr;
+        let mut curr = (self.curr + min_len).saturating_sub(1);
         let mut found_at = start;
         let mut keyword = None;
 
@@ -97,9 +111,7 @@ impl<'src> TokenIterator<'src> {
 
             let len = slice.len();
 
-            if len < K::MIN_LEN {
-                continue;
-            } else if len > K::MAX_LEN {
+            if len > K::MAX_LEN {
                 break;
             }
 
@@ -109,6 +121,15 @@ impl<'src> TokenIterator<'src> {
                 // longer keywords have precedence, otherwise they would not be possible to lex...
                 keyword = Some(Token::new(slice_str, kind.into()));
                 found_at = curr;
+
+                match kind.prefix_of() {
+                    Some(word_len) => {
+                        if len > word_len {
+                            break;
+                        }
+                    }
+                    None => break,
+                }
             }
         }
 
@@ -118,16 +139,19 @@ impl<'src> TokenIterator<'src> {
         keyword.map(|k| (k, found_at))
     }
 
-    fn lex_greek(&mut self) -> Option<(Token<'src>, usize)> {
-        self.lex_keyword::<Greeks>()
+    /// Identifies a greek letter in AsciiMath input, e.g. alpha, beta, pi, Psi etc.
+    fn lex_greek(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Greeks>(min_len)
     }
 
-    fn lex_arrow(&mut self) -> Option<(Token<'src>, usize)> {
-        self.lex_keyword::<Arrows>()
+    /// Identifies an arrow in AsciiMath input, e.g. ->, MapsTo, |-> etc.
+    fn lex_arrow(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Arrows>(min_len)
     }
 
-    fn lex_function(&mut self) -> Option<(Token<'src>, usize)> {
-        self.lex_keyword::<Functions>()
+    /// Identifies a function in AsciiMath input, e.g. log, sin, cosh etc.
+    fn lex_function(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Functions>(min_len)
     }
 }
 
@@ -137,21 +161,17 @@ impl<'src> Iterator for TokenIterator<'src> {
     fn next(&mut self) -> Option<Self::Item> {
         self.skip_whitespace();
 
-        let lexing_res = match self.src.get(self.curr) {
-            Some(sym) if sym.is_digit() || sym.is_dot() => self.lex_number(),
-
-            Some(_) => self
-                .lex_greek()
-                .or_else(|| self.lex_arrow())
-                .or_else(|| self.lex_function()),
-
-            None => None,
-        };
-
-        match lexing_res {
-            Some((token, cursor)) => {
-                self.curr = dbg!(cursor);
-                Some(token)
+        match self.src.get(self.curr) {
+            Some(_) => {
+                next_impl::next_impl!(
+                self,
+                no_prefix:
+                    lex_number;
+                prefix:
+                    lex_greek,
+                    lex_arrow,
+                    lex_function
+                )
             }
             None => None,
         }

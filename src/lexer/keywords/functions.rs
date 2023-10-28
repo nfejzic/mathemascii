@@ -33,7 +33,15 @@ generate_impl!(
     "min" => Min,
     "max" => Max,
     "f" => F,
-    "g" => G
+    "g" => G,
+    prefixes:
+        Sin => "sinh",
+        Cos => "cosh",
+        Tan => "tanh",
+        Sec => "sech",
+        Csc => "csch",
+        Cot => "coth",
+        G => "gcd" // or glb, but same length so it does not matter
 );
 
 impl From<Function> for TokenKind {

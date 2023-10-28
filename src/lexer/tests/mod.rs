@@ -180,7 +180,7 @@ mod arrow {
 }
 
 mod function {
-    use crate::lexer::keywords::functions::Function;
+    use crate::lexer::keywords::{functions::Function, greek::Greek};
 
     use super::super::*;
 
@@ -247,4 +247,29 @@ mod function {
             ]
         );
     }
+
+    #[test]
+    fn precedence() {
+        let src = "gammag";
+
+        let tokens: Vec<_> = src.tokenize().collect();
+
+        assert_eq!(
+            tokens,
+            vec![
+                Token::new("gamma", TokenKind::Greek(Greek::Gamma)),
+                Token::new("g", TokenKind::Function(Function::G)),
+            ]
+        );
+    }
+}
+
+#[test]
+fn perf() {
+    let src = "gammaggammaggammaggammaggammag".repeat(1_000);
+    let src = src.as_str();
+
+    let tokens = src.tokenize();
+
+    assert_eq!(tokens.count(), 10_000);
 }

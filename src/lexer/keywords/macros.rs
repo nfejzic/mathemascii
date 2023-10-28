@@ -11,7 +11,7 @@ macro_rules! define_keywords {
 }
 
 macro_rules! generate_impl {
-    ($kind:ident, $struct:ident, $($($lit:literal)|* => $var:ident),*) => {
+    ($kind:ident, $struct:ident, $($($lit:literal)|* => $var:ident),* $(,prefixes: $($($p_kind:ident)|* => $longer:literal),*)?) => {
         const LITERALS: &[&[&str]] = $crate::lexer::keywords::macros::define_keywords!(
             $($($lit)|*),*
         );
@@ -95,6 +95,20 @@ macro_rules! generate_impl {
             }
 
             max_len
+        }
+
+        impl $crate::lexer::KeywordKind for $kind {
+            fn prefix_of(&self) -> Option<usize> {
+                match *self {
+                    $(
+                    $(
+                        $($kind::$p_kind)|* => Some($longer.len()),
+                    )*
+                    )?
+
+                    _ => None,
+                }
+            }
         }
 
         pub struct $struct;

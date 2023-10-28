@@ -27,6 +27,7 @@ generate_impl!(
     "Pi" => BigPi,
     "rho" => Rho,
     "sigma" => Sigma,
+    "Sigma" => BigSigma,
     "tau" => Tau,
     "upsilon" => Upsilon,
     "phi" => Phi,

@@ -17,7 +17,11 @@ generate_impl!(
     "harr" | "leftrightarrow" => LeftRight,
     "rArr" | "Rightarrow" => BigRight,
     "lArr" | "Leftarrow" => BigLeft,
-    "hArr" | "Leftrightarrow" => BigLeftRight
+    "hArr" | "Leftrightarrow" => BigLeftRight,
+    prefixes:
+        RightTail => ">->>",
+        TwoHeadRight => "twoheadrightarrowtail",
+        To => "->>"
 );
 
 impl From<Arrow> for TokenKind {
