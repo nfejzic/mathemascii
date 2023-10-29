@@ -9,6 +9,7 @@ mod macros;
 pub mod arrows;
 pub mod functions;
 pub mod greek;
+pub mod operators;
 
 pub(crate) trait KeywordKind: Into<TokenKind> + Copy {
     fn prefix_of(&self) -> Option<usize>;

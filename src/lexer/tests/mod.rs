@@ -4,6 +4,8 @@ use crate::lexer::{
     Tokenize,
 };
 
+mod operators;
+
 #[test]
 fn skip_whitespace() {
     let src = "   alpha   24.42";

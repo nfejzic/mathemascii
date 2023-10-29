@@ -7,7 +7,9 @@ use crate::scanner::{Scan, Symbol};
 
 use token::{Token, TokenKind};
 
-use self::keywords::{arrows::Arrows, functions::Functions, greek::Greeks, Keyword, KeywordKind};
+use self::keywords::{
+    arrows::Arrows, functions::Functions, greek::Greeks, operators::Operators, Keyword, KeywordKind,
+};
 
 mod keywords;
 
@@ -107,6 +109,11 @@ impl<'src> TokenIterator<'src> {
         let mut keyword = None;
 
         while let Some(slice) = self.src.get(start..=curr) {
+            if slice.last().map(|s| s.is_whitespace()).unwrap_or(false) {
+                // token can't contain a whitespace
+                break;
+            }
+
             curr += 1;
 
             let len = slice.len();
@@ -153,6 +160,10 @@ impl<'src> TokenIterator<'src> {
     fn lex_function(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
         self.lex_keyword::<Functions>(min_len)
     }
+
+    fn lex_operator(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Operators>(min_len)
+    }
 }
 
 impl<'src> Iterator for TokenIterator<'src> {
@@ -170,7 +181,8 @@ impl<'src> Iterator for TokenIterator<'src> {
                 prefix:
                     lex_greek,
                     lex_arrow,
-                    lex_function
+                    lex_function,
+                    lex_operator
                 )
             }
             None => None,
