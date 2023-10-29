@@ -8,7 +8,8 @@ use crate::scanner::{Scan, Symbol};
 use token::{Token, TokenKind};
 
 use self::keywords::{
-    arrows::Arrows, functions::Functions, greek::Greeks, operators::Operators, Keyword, KeywordKind,
+    arrows::Arrows, functions::Functions, greek::Greeks, operators::Operators,
+    relations::Relations, Keyword, KeywordKind,
 };
 
 mod keywords;
@@ -164,6 +165,10 @@ impl<'src> TokenIterator<'src> {
     fn lex_operator(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
         self.lex_keyword::<Operators>(min_len)
     }
+
+    fn lex_relation(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Relations>(min_len)
+    }
 }
 
 impl<'src> Iterator for TokenIterator<'src> {
@@ -182,7 +187,8 @@ impl<'src> Iterator for TokenIterator<'src> {
                     lex_greek,
                     lex_arrow,
                     lex_function,
-                    lex_operator
+                    lex_operator,
+                    lex_relation
                 )
             }
             None => None,

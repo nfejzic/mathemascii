@@ -1,4 +1,6 @@
-use super::keywords::{arrows::Arrow, functions::Function, greek::Greek, operators::Operator};
+use super::keywords::{
+    arrows::Arrow, functions::Function, greek::Greek, operators::Operator, relations::Relation,
+};
 
 /// Token identified in the ascii math source.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -28,7 +30,11 @@ pub(crate) enum TokenKind {
     /// Standard functions, eg. sin, cos etc.
     Function(Function),
 
+    /// Standard operators, e.g. +, -, *, |>< etc.
     Operator(Operator),
+
+    /// Relations in maths, e.g. =, !=, <, <= etc.
+    Relation(Relation),
 
     #[default]
     Unimplemented,

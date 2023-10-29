@@ -9,6 +9,7 @@ mod functions;
 mod greeks;
 mod numbers;
 mod operators;
+mod relations;
 
 #[test]
 fn skip_whitespace() {
@@ -26,7 +27,7 @@ fn skip_whitespace() {
 
 #[test]
 fn perf() {
-    let src = "gammaggammaggammaggammaggammag".repeat(1_000);
+    let src = "gammag gammag gammag gammag gammag ".repeat(1_000);
     let src = src.as_str();
 
     let tokens = src.tokenize();
