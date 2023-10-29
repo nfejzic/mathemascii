@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/logicals.rs
+expression: "Snapshot((input, tokens))"
+---
+andornot and or not
+
+and
+^^^ -> Logical(And) at: 0 -> 3
+
+   or
+   ^^ -> Logical(Or) at: 3 -> 5
+
+     not
+     ^^^ -> Logical(Not) at: 5 -> 8
+
+         and
+         ^^^ -> Logical(And) at: 9 -> 12
+
+             or
+             ^^ -> Logical(Or) at: 13 -> 15
+
+                not
+                ^^^ -> Logical(Not) at: 16 -> 19
+
+

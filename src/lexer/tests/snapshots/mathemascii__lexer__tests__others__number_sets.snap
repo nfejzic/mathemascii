@@ -1,0 +1,22 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((input, tokens))"
+---
+CCNNQQRRZZ
+
+CC
+^^ -> Other(Complex) at: 0 -> 2
+
+  NN
+  ^^ -> Other(Natural) at: 2 -> 4
+
+    QQ
+    ^^ -> Other(Rational) at: 4 -> 6
+
+      RR
+      ^^ -> Other(Irrational) at: 6 -> 8
+
+        ZZ
+        ^^ -> Other(Integer) at: 8 -> 10
+
+

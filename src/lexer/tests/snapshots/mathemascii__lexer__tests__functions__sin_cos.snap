@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/functions.rs
+expression: "Snapshot((input, tokens))"
+---
+sincos
+
+sin
+^^^ -> Function(Sin) at: 0 -> 3
+
+   cos
+   ^^^ -> Function(Cos) at: 3 -> 6
+
+

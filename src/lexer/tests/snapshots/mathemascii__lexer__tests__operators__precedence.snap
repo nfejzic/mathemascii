@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/operators.rs
+expression: "Snapshot((input, tokens))"
+---
+nnnnn
+
+nnn
+^^^ -> Operator(BigCap) at: 0 -> 3
+
+   nn
+   ^^ -> Operator(Cap) at: 3 -> 5
+
+

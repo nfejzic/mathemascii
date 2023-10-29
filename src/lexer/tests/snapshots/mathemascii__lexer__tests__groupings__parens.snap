@@ -1,0 +1,28 @@
+---
+source: src/lexer/tests/groupings.rs
+expression: "Snapshot((input, tokens))"
+---
+()(()))
+
+(
+^ -> Grouping(OpenParen) at: 0 -> 1
+
+ )
+ ^ -> Grouping(CloseParen) at: 1 -> 2
+
+  (
+  ^ -> Grouping(OpenParen) at: 2 -> 3
+
+   (
+   ^ -> Grouping(OpenParen) at: 3 -> 4
+
+    )
+    ^ -> Grouping(CloseParen) at: 4 -> 5
+
+     )
+     ^ -> Grouping(CloseParen) at: 5 -> 6
+
+      )
+      ^ -> Grouping(CloseParen) at: 6 -> 7
+
+

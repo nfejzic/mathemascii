@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/operators.rs
+expression: "Snapshot((input, tokens))"
+---
++ - @ox^^^^^
+
++
+^ -> Operator(Plus) at: 0 -> 1
+
+  -
+  ^ -> Operator(Minus) at: 2 -> 3
+
+    @
+    ^ -> Operator(Circle) at: 4 -> 5
+
+     ox
+     ^^ -> Operator(OTimes) at: 5 -> 7
+
+       ^^^
+       ^^^ -> Operator(BigWedge) at: 7 -> 10
+
+          ^^
+          ^^ -> Operator(Wedge) at: 10 -> 12
+
+

@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((input, tokens))"
+---
+int oint del grad oo |...|
+
+int
+^^^ -> Other(Integral) at: 0 -> 3
+
+    oint
+    ^^^^ -> Other(OIntegral) at: 4 -> 8
+
+         del
+         ^^^ -> Other(Partial) at: 9 -> 12
+
+             grad
+             ^^^^ -> Other(Nabla) at: 13 -> 17
+
+                  oo
+                  ^^ -> Other(Infinity) at: 18 -> 20
+
+                     |...|
+                     ^^^^^ -> Other(LowDots) at: 21 -> 26
+
+

@@ -41,7 +41,7 @@ generate_impl!(
     "NN" => Natural,
     "QQ" => Rational,
     "RR" => Irrational,
-    "ZZ" => Whole,
+    "ZZ" => Integer,
     "text" => Text,
     "\"" => Quote,
     prefixes:

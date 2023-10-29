@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/operators.rs
+expression: "Snapshot((input, tokens))"
+---
++ -
+
++
+^ -> Operator(Plus) at: 0 -> 1
+
+  -
+  ^ -> Operator(Minus) at: 2 -> 3
+
+

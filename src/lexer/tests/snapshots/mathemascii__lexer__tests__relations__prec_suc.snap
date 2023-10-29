@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/relations.rs
+expression: "Snapshot((input, tokens))"
+---
+-< -<= preceq prec succ >-=
+
+-<
+^^ -> Relation(Prec) at: 0 -> 2
+
+   -<=
+   ^^^ -> Relation(PrecEq) at: 3 -> 6
+
+       preceq
+       ^^^^^^ -> Relation(PrecEq) at: 7 -> 13
+
+              prec
+              ^^^^ -> Relation(Prec) at: 14 -> 18
+
+                   succ
+                   ^^^^ -> Relation(Succ) at: 19 -> 23
+
+                        >-=
+                        ^^^ -> Relation(SuccEq) at: 24 -> 27
+
+

@@ -1,0 +1,31 @@
+---
+source: src/lexer/tests/groupings.rs
+expression: "Snapshot((input, tokens))"
+---
+[][[]]][
+
+[
+^ -> Grouping(OpenBracket) at: 0 -> 1
+
+ ]
+ ^ -> Grouping(CloseBracket) at: 1 -> 2
+
+  [
+  ^ -> Grouping(OpenBracket) at: 2 -> 3
+
+   [
+   ^ -> Grouping(OpenBracket) at: 3 -> 4
+
+    ]
+    ^ -> Grouping(CloseBracket) at: 4 -> 5
+
+     ]
+     ^ -> Grouping(CloseBracket) at: 5 -> 6
+
+      ]
+      ^ -> Grouping(CloseBracket) at: 6 -> 7
+
+       [
+       ^ -> Grouping(OpenBracket) at: 7 -> 8
+
+

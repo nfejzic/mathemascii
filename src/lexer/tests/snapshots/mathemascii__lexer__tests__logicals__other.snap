@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/logicals.rs
+expression: "Snapshot((input, tokens))"
+---
+_|_ bottop TT |-- |==
+
+_|_
+^^^ -> Logical(Bottom) at: 0 -> 3
+
+    bot
+    ^^^ -> Logical(Bottom) at: 4 -> 7
+
+       top
+       ^^^ -> Logical(Top) at: 7 -> 10
+
+           TT
+           ^^ -> Logical(Top) at: 11 -> 13
+
+              |--
+              ^^^ -> Logical(VerticalDash) at: 14 -> 17
+
+                  |==
+                  ^^^ -> Logical(Models) at: 18 -> 21
+
+

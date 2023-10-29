@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/relations.rs
+expression: "Snapshot((input, tokens))"
+---
+< <= > >= mlt gg
+
+<
+^ -> Relation(LessThan) at: 0 -> 1
+
+  <=
+  ^^ -> Relation(LessEqualThan) at: 2 -> 4
+
+     >
+     ^ -> Relation(GreaterThan) at: 5 -> 6
+
+       >=
+       ^^ -> Relation(GreaterEqualThan) at: 7 -> 9
+
+          mlt
+          ^^^ -> Relation(MuchLessThan) at: 10 -> 13
+
+              gg
+              ^^ -> Relation(MuchGreaterThan) at: 14 -> 16
+
+

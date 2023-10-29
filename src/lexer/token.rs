@@ -1,6 +1,9 @@
-use super::keywords::{
-    arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping, logicals::Logical,
-    operators::Operator, others::Other, relations::Relation,
+use super::{
+    keywords::{
+        arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping, logicals::Logical,
+        operators::Operator, others::Other, relations::Relation,
+    },
+    Span,
 };
 
 /// Token identified in the ascii math source.
@@ -8,11 +11,31 @@ use super::keywords::{
 pub(crate) struct Token<'src> {
     kind: TokenKind,
     content: &'src str,
+    span: Span,
 }
 
 impl Token<'_> {
-    pub fn new(content: &str, kind: TokenKind) -> Token<'_> {
-        Token { content, kind }
+    pub fn with_span(content: &str, kind: TokenKind, span: Span) -> Token<'_> {
+        Token {
+            content,
+            kind,
+            span,
+        }
+    }
+
+    #[allow(dead_code)] // is used in testing
+    pub fn span(&self) -> Span {
+        self.span
+    }
+
+    #[allow(dead_code)] // is used in testing
+    pub fn kind(&self) -> TokenKind {
+        self.kind
+    }
+
+    #[allow(dead_code)] // is used in testing
+    pub fn as_str(&self) -> &str {
+        self.content
     }
 }
 

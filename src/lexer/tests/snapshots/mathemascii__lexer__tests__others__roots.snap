@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((input, tokens))"
+---
+sqrtroot
+
+sqrt
+^^^^ -> Other(SquareRoot) at: 0 -> 4
+
+    root
+    ^^^^ -> Other(Root) at: 4 -> 8
+
+

@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/relations.rs
+expression: "Snapshot((input, tokens))"
+---
+_= ~= ~~ prop approx cong
+
+_=
+^^ -> Relation(Equivalent) at: 0 -> 2
+
+   ~=
+   ^^ -> Relation(Congruent) at: 3 -> 5
+
+      ~~
+      ^^ -> Relation(Approximate) at: 6 -> 8
+
+         prop
+         ^^^^ -> Relation(Prop) at: 9 -> 13
+
+              approx
+              ^^^^^^ -> Relation(Approximate) at: 14 -> 20
+
+                     cong
+                     ^^^^ -> Relation(Congruent) at: 21 -> 25
+
+

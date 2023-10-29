@@ -1,0 +1,19 @@
+---
+source: src/lexer/tests/functions.rs
+expression: "Snapshot((input, tokens))"
+---
+sincoshfg
+
+sin
+^^^ -> Function(Sin) at: 0 -> 3
+
+   cosh
+   ^^^^ -> Function(CosH) at: 3 -> 7
+
+       f
+       ^ -> Function(F) at: 7 -> 8
+
+        g
+        ^ -> Function(G) at: 8 -> 9
+
+

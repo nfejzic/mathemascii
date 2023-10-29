@@ -1,0 +1,7 @@
+---
+source: src/lexer/tests/arrows.rs
+expression: "Snapshot((input, tokens))"
+---
+abcdefghijklmnopqrstuvwxy
+
+

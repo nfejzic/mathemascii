@@ -1,0 +1,16 @@
+---
+source: src/lexer/tests/operators.rs
+expression: "Snapshot((input, tokens))"
+---
+*** ** *
+
+***
+^^^ -> Operator(Star) at: 0 -> 3
+
+    **
+    ^^ -> Operator(Asterisk) at: 4 -> 6
+
+       *
+       ^ -> Operator(Dot) at: 7 -> 8
+
+

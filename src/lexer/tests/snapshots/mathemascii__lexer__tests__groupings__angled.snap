@@ -1,0 +1,22 @@
+---
+source: src/lexer/tests/groupings.rs
+expression: "Snapshot((input, tokens))"
+---
+langle(::)<<>>
+
+langle
+^^^^^^ -> Grouping(LeftAngled) at: 0 -> 6
+
+      (:
+      ^^ -> Grouping(LeftAngled) at: 6 -> 8
+
+        :)
+        ^^ -> Grouping(RightAngled) at: 8 -> 10
+
+          <<
+          ^^ -> Grouping(LeftAngled) at: 10 -> 12
+
+            >>
+            ^^ -> Grouping(RightAngled) at: 12 -> 14
+
+

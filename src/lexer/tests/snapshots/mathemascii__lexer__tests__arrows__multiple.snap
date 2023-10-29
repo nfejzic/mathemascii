@@ -1,0 +1,22 @@
+---
+source: src/lexer/tests/arrows.rs
+expression: "Snapshot((input, tokens))"
+---
+uarr->|->twoheadrightarrowtailto
+
+uarr
+^^^^ -> Arrow(Up) at: 0 -> 4
+
+    ->
+    ^^ -> Arrow(To) at: 4 -> 6
+
+      |->
+      ^^^ -> Arrow(MapsTo) at: 6 -> 9
+
+         twoheadrightarrowtail
+         ^^^^^^^^^^^^^^^^^^^^^ -> Arrow(TwoHeadRightTail) at: 9 -> 30
+
+                              to
+                              ^^ -> Arrow(To) at: 30 -> 32
+
+

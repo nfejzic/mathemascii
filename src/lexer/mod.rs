@@ -15,7 +15,7 @@ use self::keywords::{
 mod keywords;
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-struct Span {
+pub(crate) struct Span {
     start: usize,
     end: usize,
 }
@@ -84,9 +84,16 @@ impl<'src> TokenIterator<'src> {
         }
 
         let content = Symbol::as_str(self.src.get(start..curr)?)?;
+
+        if matches!(content, ".") {
+            // single dot is not a valid number
+            return None;
+        }
+
         let kind = TokenKind::Number;
 
-        Some((Token::new(content, kind), curr))
+        let span = Span { start, end: curr };
+        Some((Token::with_span(content, kind, span), curr))
     }
 
     /// Lexes a keyword with a given minimum length (or default for the given keyword if that is
@@ -127,7 +134,8 @@ impl<'src> TokenIterator<'src> {
 
             if let Some(kind) = <K as Keyword>::get(slice_str) {
                 // longer keywords have precedence, otherwise they would not be possible to lex...
-                keyword = Some(Token::new(slice_str, kind.into()));
+                let span = Span { start, end: curr };
+                keyword = Some(Token::with_span(slice_str, kind.into(), span));
                 found_at = curr;
 
                 match kind.prefix_of() {

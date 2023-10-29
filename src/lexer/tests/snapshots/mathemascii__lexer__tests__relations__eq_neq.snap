@@ -1,0 +1,19 @@
+---
+source: src/lexer/tests/relations.rs
+expression: "Snapshot((input, tokens))"
+---
+= != =!=
+
+=
+^ -> Relation(Eq) at: 0 -> 1
+
+  !=
+  ^^ -> Relation(NotEq) at: 2 -> 4
+
+     =
+     ^ -> Relation(Eq) at: 5 -> 6
+
+      !=
+      ^^ -> Relation(NotEq) at: 6 -> 8
+
+
