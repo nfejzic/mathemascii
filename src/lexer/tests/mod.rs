@@ -7,6 +7,7 @@ use crate::lexer::{
 mod arrows;
 mod functions;
 mod greeks;
+mod groupings;
 mod logicals;
 mod numbers;
 mod operators;

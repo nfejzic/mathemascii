@@ -9,6 +9,7 @@ mod macros;
 pub mod arrows;
 pub mod functions;
 pub mod greek;
+pub mod groupings;
 pub mod logicals;
 pub mod operators;
 pub mod relations;

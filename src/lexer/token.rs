@@ -1,6 +1,6 @@
 use super::keywords::{
-    arrows::Arrow, functions::Function, greek::Greek, logicals::Logical, operators::Operator,
-    relations::Relation,
+    arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping, logicals::Logical,
+    operators::Operator, relations::Relation,
 };
 
 /// Token identified in the ascii math source.
@@ -39,6 +39,9 @@ pub(crate) enum TokenKind {
 
     /// Logic symbols, e.g. and, or, for all etc.
     Logical(Logical),
+
+    /// Grouping brackets in ascii math, e.g. (, {, [, (: etc.
+    Grouping(Grouping),
 
     #[default]
     Unimplemented,
