@@ -1,5 +1,6 @@
 use super::keywords::{
-    arrows::Arrow, functions::Function, greek::Greek, operators::Operator, relations::Relation,
+    arrows::Arrow, functions::Function, greek::Greek, logicals::Logical, operators::Operator,
+    relations::Relation,
 };
 
 /// Token identified in the ascii math source.
@@ -35,6 +36,9 @@ pub(crate) enum TokenKind {
 
     /// Relations in maths, e.g. =, !=, <, <= etc.
     Relation(Relation),
+
+    /// Logic symbols, e.g. and, or, for all etc.
+    Logical(Logical),
 
     #[default]
     Unimplemented,
