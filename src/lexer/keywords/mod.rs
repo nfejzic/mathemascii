@@ -12,6 +12,7 @@ pub mod greek;
 pub mod groupings;
 pub mod logicals;
 pub mod operators;
+pub mod others;
 pub mod relations;
 
 pub(crate) trait KeywordKind: Into<TokenKind> + Copy {

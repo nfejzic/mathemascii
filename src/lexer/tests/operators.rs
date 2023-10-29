@@ -4,7 +4,7 @@ use super::super::*;
 
 #[test]
 fn plus_minus() {
-    let src = "+-";
+    let src = "+ -";
     let tokens: Vec<_> = src.tokenize().collect();
     assert_eq!(
         tokens,
@@ -52,7 +52,7 @@ fn too_long() {
 
 #[test]
 fn multiple() {
-    let src = "+-@ox^^^^^";
+    let src = "+ - @ox^^^^^";
 
     let tokens: Vec<_> = src.tokenize().collect();
 

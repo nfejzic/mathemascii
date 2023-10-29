@@ -9,7 +9,7 @@ use token::{Token, TokenKind};
 
 use self::keywords::{
     arrows::Arrows, functions::Functions, greek::Greeks, groupings::Groupings, logicals::Logicals,
-    operators::Operators, relations::Relations, Keyword, KeywordKind,
+    operators::Operators, others::Others, relations::Relations, Keyword, KeywordKind,
 };
 
 mod keywords;
@@ -177,6 +177,10 @@ impl<'src> TokenIterator<'src> {
     fn lex_grouping(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
         self.lex_keyword::<Groupings>(min_len)
     }
+
+    fn lex_other(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Others>(min_len)
+    }
 }
 
 impl<'src> Iterator for TokenIterator<'src> {
@@ -198,7 +202,8 @@ impl<'src> Iterator for TokenIterator<'src> {
                     lex_operator,
                     lex_relation,
                     lex_logical,
-                    lex_grouping
+                    lex_grouping,
+                    lex_other
                 )
             }
             None => None,
