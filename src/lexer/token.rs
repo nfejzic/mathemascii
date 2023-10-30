@@ -1,7 +1,7 @@
 use super::{
     keywords::{
-        arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping, logicals::Logical,
-        operators::Operator, others::Other, relations::Relation,
+        accents::Accent, arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping,
+        logicals::Logical, operators::Operator, others::Other, relations::Relation,
     },
     Span,
 };
@@ -68,6 +68,9 @@ pub(crate) enum TokenKind {
 
     /// Other (Miscellaneous) symbols of ascii math.
     Other(Other),
+
+    /// Ascii math keywords for accents, e.g. hat, bar, ubrace etc.
+    Accent(Accent),
 
     #[default]
     Unimplemented,

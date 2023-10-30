@@ -8,8 +8,9 @@ use crate::scanner::{Scan, Symbol};
 use token::{Token, TokenKind};
 
 use self::keywords::{
-    arrows::Arrows, functions::Functions, greek::Greeks, groupings::Groupings, logicals::Logicals,
-    operators::Operators, others::Others, relations::Relations, Keyword, KeywordKind,
+    accents::Accents, arrows::Arrows, functions::Functions, greek::Greeks, groupings::Groupings,
+    logicals::Logicals, operators::Operators, others::Others, relations::Relations, Keyword,
+    KeywordKind,
 };
 
 mod keywords;
@@ -189,6 +190,10 @@ impl<'src> TokenIterator<'src> {
     fn lex_other(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
         self.lex_keyword::<Others>(min_len)
     }
+
+    fn lex_accent(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
+        self.lex_keyword::<Accents>(min_len)
+    }
 }
 
 impl<'src> Iterator for TokenIterator<'src> {
@@ -211,7 +216,8 @@ impl<'src> Iterator for TokenIterator<'src> {
                     lex_relation,
                     lex_logical,
                     lex_grouping,
-                    lex_other
+                    lex_other,
+                    lex_accent
                 )
             }
             None => None,

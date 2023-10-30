@@ -2,6 +2,7 @@ use crate::lexer::{token::Token, Tokenize};
 
 use super::Span;
 
+mod accents;
 mod arrows;
 mod functions;
 mod greeks;

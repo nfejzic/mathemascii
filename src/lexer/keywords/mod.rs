@@ -6,6 +6,7 @@ use super::token::TokenKind;
 
 mod macros;
 
+pub mod accents;
 pub mod arrows;
 pub mod functions;
 pub mod greek;
