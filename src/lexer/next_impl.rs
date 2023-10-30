@@ -1,5 +1,5 @@
 macro_rules! next_impl {
-    ($self: ident, no_prefix: $($infallible_fn:ident),*; prefix: $($fallible_fn:ident),*) => {{
+    ($self: ident, no_prefix: $($infallible_fn:ident),*; prefix: $($fallible_fn:ident),* or $fallback_fn:ident) => {{
         let mut curr = $self.curr;
         let mut token = None;
 
@@ -24,8 +24,17 @@ macro_rules! next_impl {
         }
         )*
 
-        $self.curr = curr;
-        token
+        match token {
+            Some(token) => {
+                $self.curr = curr;
+                Some(token)
+            }
+            None => {
+                let (token, curr) = $self.$fallback_fn(curr - $self.curr + 1)?;
+                $self.curr = curr;
+                return Some(token);
+            }
+        }
     }};
 }
 

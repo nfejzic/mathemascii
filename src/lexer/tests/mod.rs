@@ -18,9 +18,9 @@ macro_rules! test_snap {
     ($name:ident, $input:literal) => {
         #[test]
         fn $name() {
-            let input = $input;
+            let input = &$input;
             let tokens: Vec<_> = input.tokenize().collect();
-            insta::assert_display_snapshot!(Snapshot((input, tokens)));
+            insta::assert_display_snapshot!(Snapshot((*input, tokens)));
         }
     };
 }
@@ -75,7 +75,7 @@ test_snap!(skip_whitespace, "   alpha   24.42");
 #[test]
 fn perf() {
     let src = "gammag gammag gammag gammag gammag ".repeat(1_000);
-    let src = src.as_str();
+    let src = &src.as_str();
 
     let tokens = src.tokenize();
 

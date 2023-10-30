@@ -198,6 +198,27 @@ impl<'src> TokenIterator<'src> {
     fn lex_font_command(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
         self.lex_keyword::<FontCommands>(min_len)
     }
+
+    fn lex_variable(&self, _: usize) -> Option<(Token<'src>, usize)> {
+        let sym = self.src.get(self.curr)?;
+
+        if !sym.is_letter() {
+            return None;
+        }
+
+        let span = Span {
+            start: self.curr,
+            end: self.curr + 1,
+        };
+
+        let token = Token::with_span(sym.content, TokenKind::Variable, span);
+
+        Some((token, self.curr + 1))
+    }
+
+    pub(crate) fn finished(&self) -> bool {
+        self.curr == self.src.len()
+    }
 }
 
 impl<'src> Iterator for TokenIterator<'src> {
@@ -223,6 +244,7 @@ impl<'src> Iterator for TokenIterator<'src> {
                     lex_other,
                     lex_accent,
                     lex_font_command
+                    or lex_variable
                 )
             }
             None => None,

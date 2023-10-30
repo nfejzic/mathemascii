@@ -76,6 +76,9 @@ pub(crate) enum TokenKind {
     /// Ascii math font commands such as bb, cc etc.
     FontCommand(FontCommand),
 
+    /// Other Ascii symbol that was not recognized as a token.
+    Variable,
+
     #[default]
     Unimplemented,
 }

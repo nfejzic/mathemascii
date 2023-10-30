@@ -1,6 +1,6 @@
 ---
 source: src/lexer/tests/numbers.rs
-expression: "Snapshot((input, tokens))"
+expression: "Snapshot((*input, tokens))"
 ---
 .42 .42a
 
@@ -9,5 +9,8 @@ expression: "Snapshot((input, tokens))"
 
     .42
     ^^^ -> Number at: 4 -> 7
+
+       a
+       ^ -> Variable at: 7 -> 8
 
 

@@ -60,6 +60,10 @@ impl<'src> Symbol<'src> {
     pub(crate) fn is_whitespace(&self) -> bool {
         self.content.chars().all(|c| c.is_whitespace())
     }
+
+    pub(crate) fn is_letter(&self) -> bool {
+        self.content.chars().all(|c| c.is_ascii_alphabetic())
+    }
 }
 
 pub trait Scan {
