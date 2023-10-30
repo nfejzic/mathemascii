@@ -1,7 +1,11 @@
 mod lexer;
+mod parser;
 mod scanner;
 
+use parser::AsciiMath;
+use scanner::Scan;
+
 /// Parse asciimath content into an abstract syntax tree.
-pub fn parse(_input: &str) -> String {
-    unimplemented!("Parsing of ascii math is not yet implemented.")
+pub fn parse<S: Scan>(input: &S) -> AsciiMath {
+    AsciiMath::parse(input)
 }

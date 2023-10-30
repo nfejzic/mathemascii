@@ -37,7 +37,7 @@ pub(crate) trait Tokenize {
     fn tokenize(&self) -> TokenIterator;
 }
 
-impl<T> Tokenize for T
+impl<T: ?Sized> Tokenize for T
 where
     T: Scan,
 {

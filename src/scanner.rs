@@ -1,6 +1,6 @@
 /// Symbol found in the source input.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) struct Symbol<'src> {
+pub struct Symbol<'src> {
     /// Source input of ascii math.
     src: &'src str,
     /// Content of this symbols.
@@ -9,7 +9,11 @@ pub(crate) struct Symbol<'src> {
     offs: usize,
 }
 
-fn scan_str(src: &str) -> Vec<Symbol> {
+fn scan_str<S>(src: &S) -> Vec<Symbol<'_>>
+where
+    S: AsRef<str> + ?Sized,
+{
+    let src = src.as_ref();
     let mut symbols: Vec<_> = src
         .split("")
         .skip(1)
@@ -58,11 +62,14 @@ impl<'src> Symbol<'src> {
     }
 }
 
-pub(crate) trait Scan {
+pub trait Scan {
     fn scan(&self) -> Vec<Symbol>;
 }
 
-impl Scan for &str {
+impl<S> Scan for &S
+where
+    S: AsRef<str>,
+{
     fn scan(&self) -> Vec<Symbol> {
         scan_str(self)
     }
