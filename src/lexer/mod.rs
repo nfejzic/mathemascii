@@ -8,7 +8,7 @@ use crate::scanner::{Scan, Symbol};
 use token::{Token, TokenKind};
 
 use self::keywords::{
-    accents::Accents, arrows::Arrows, functions::Functions, greek::Greeks, groupings::Groupings,
+    accents::Accents, arrows::Arrows, functions::Functions, greeks::Greeks, groupings::Groupings,
     logicals::Logicals, operators::Operators, others::Others, relations::Relations, Keyword,
     KeywordKind,
 };

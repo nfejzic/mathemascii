@@ -1,6 +1,6 @@
 use super::{
     keywords::{
-        accents::Accent, arrows::Arrow, functions::Function, greek::Greek, groupings::Grouping,
+        accents::Accent, arrows::Arrow, functions::Function, greeks::Greek, groupings::Grouping,
         logicals::Logical, operators::Operator, others::Other, relations::Relation,
     },
     Span,
