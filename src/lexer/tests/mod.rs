@@ -4,6 +4,7 @@ use super::Span;
 
 mod accents;
 mod arrows;
+mod font_commands;
 mod functions;
 mod greeks;
 mod groupings;

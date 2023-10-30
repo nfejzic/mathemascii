@@ -8,6 +8,7 @@ mod macros;
 
 pub mod accents;
 pub mod arrows;
+pub mod font_commands;
 pub mod functions;
 pub mod greeks;
 pub mod groupings;

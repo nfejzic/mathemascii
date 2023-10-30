@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/font_commands.rs
+expression: "Snapshot((input, tokens))"
+---
+cc mathtt mathcal fr sf mathfrak
+
+cc
+^^ -> FontCommand(Calligraphic) at: 0 -> 2
+
+   mathtt
+   ^^^^^^ -> FontCommand(Typewriter) at: 3 -> 9
+
+          mathcal
+          ^^^^^^^ -> FontCommand(Calligraphic) at: 10 -> 17
+
+                  fr
+                  ^^ -> FontCommand(Gothic) at: 18 -> 20
+
+                     sf
+                     ^^ -> FontCommand(SansSerif) at: 21 -> 23
+
+                        mathfrak
+                        ^^^^^^^^ -> FontCommand(Gothic) at: 24 -> 32
+
+

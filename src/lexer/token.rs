@@ -1,7 +1,8 @@
 use super::{
     keywords::{
-        accents::Accent, arrows::Arrow, functions::Function, greeks::Greek, groupings::Grouping,
-        logicals::Logical, operators::Operator, others::Other, relations::Relation,
+        accents::Accent, arrows::Arrow, font_commands::FontCommand, functions::Function,
+        greeks::Greek, groupings::Grouping, logicals::Logical, operators::Operator, others::Other,
+        relations::Relation,
     },
     Span,
 };
@@ -71,6 +72,9 @@ pub(crate) enum TokenKind {
 
     /// Ascii math keywords for accents, e.g. hat, bar, ubrace etc.
     Accent(Accent),
+
+    /// Ascii math font commands such as bb, cc etc.
+    FontCommand(FontCommand),
 
     #[default]
     Unimplemented,
