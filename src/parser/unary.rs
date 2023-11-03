@@ -1,11 +1,14 @@
+use crate::lexer::{
+    keywords::{accents::Accent, font_commands::FontCommand, groupings::Grouping, others::Other},
+    Span, TokenKind,
+};
+
+use super::expr::SimpleExpr;
+
 /// Kinds of unary operators in Ascii math.
-enum Kind {
-    Sqrt,
-    Text,
-    Abs,
-    Floor,
-    Ceil,
-    Norm,
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum UnaryKind {
+    // accents:
     Hat,
     Overline,
     Underline,
@@ -13,9 +16,21 @@ enum Kind {
     Tilde,
     Dot,
     DoubleDot,
-    UnderBrace,
-    OverBrace,
+    Underbrace,
+    Overbrace,
     Cancel,
+
+    // others
+    SquareRoot,
+    Text,
+
+    // groupings
+    Absolute,
+    Floor,
+    Ceiling,
+    Norm,
+
+    // font commands
     Bold,
     BlackboardBold,
     Calligraphic,
@@ -24,13 +39,100 @@ enum Kind {
     SansSerif,
 }
 
+impl TryFrom<Accent> for UnaryKind {
+    type Error = ();
+
+    fn try_from(value: Accent) -> Result<Self, Self::Error> {
+        let s = match value {
+            Accent::Hat => Self::Hat,
+            Accent::Overline => Self::Overline,
+            Accent::Underline => Self::Underline,
+            Accent::Vector => Self::Vector,
+            Accent::Tilde => Self::Tilde,
+            Accent::Dot => Self::Dot,
+            Accent::DoubleDot => Self::DoubleDot,
+            Accent::Underbrace => Self::Underbrace,
+            Accent::Overbrace => Self::Overbrace,
+            Accent::Cancel => Self::Cancel,
+
+            _ => return Err(()),
+        };
+
+        Ok(s)
+    }
+}
+
+impl TryFrom<Other> for UnaryKind {
+    type Error = ();
+
+    fn try_from(value: Other) -> Result<Self, Self::Error> {
+        match value {
+            Other::SquareRoot => Ok(Self::SquareRoot),
+            Other::Text => Ok(Self::Text),
+
+            _ => Err(()),
+        }
+    }
+}
+
+impl TryFrom<Grouping> for UnaryKind {
+    type Error = ();
+
+    fn try_from(value: Grouping) -> Result<Self, Self::Error> {
+        let val = match value {
+            Grouping::Absolute => Self::Absolute,
+            Grouping::Floor => Self::Floor,
+            Grouping::Ceiling => Self::Ceiling,
+            Grouping::Norm => Self::Norm,
+            _ => return Err(()),
+        };
+
+        Ok(val)
+    }
+}
+
+impl TryFrom<FontCommand> for UnaryKind {
+    type Error = ();
+
+    fn try_from(value: FontCommand) -> Result<Self, Self::Error> {
+        let val = match value {
+            FontCommand::Bold => Self::Bold,
+            FontCommand::BlackboardBold => Self::BlackboardBold,
+            FontCommand::Calligraphic => Self::Calligraphic,
+            FontCommand::Typewriter => Self::Typewriter,
+            FontCommand::Gothic => Self::Gothic,
+            FontCommand::SansSerif => Self::SansSerif,
+        };
+
+        Ok(val)
+    }
+}
+
+impl TryFrom<TokenKind> for UnaryKind {
+    type Error = ();
+
+    fn try_from(value: TokenKind) -> Result<Self, Self::Error> {
+        match value {
+            TokenKind::Accent(accent) => Self::try_from(accent),
+            TokenKind::FontCommand(fc) => Self::try_from(fc),
+            TokenKind::Other(others) => Self::try_from(others),
+            TokenKind::Grouping(grouping) => Self::try_from(grouping),
+
+            _ => Err(()),
+        }
+    }
+}
+
 /// Unary operator in Ascii math.
-struct Unary {
-    kind: Kind,
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Unary {
+    pub(crate) kind: UnaryKind,
+    pub(crate) expr: Box<SimpleExpr>,
+    pub(crate) span: Span,
 }
 
 impl Unary {
-    pub(crate) fn parse(/* What should the parameter be? */) -> Self {
-        todo!()
+    pub fn span(&self) -> Span {
+        self.span
     }
 }

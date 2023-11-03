@@ -1,0 +1,18 @@
+---
+source: src/parser/tests/mod.rs
+expression: "Snapshot((*input, math))"
+---
+a/b
+
+Div {
+  N: 
+    IntermExpr {
+      Variable("a")
+    }
+  D: 
+    IntermExpr {
+      Variable("b")
+    }
+}
+
+

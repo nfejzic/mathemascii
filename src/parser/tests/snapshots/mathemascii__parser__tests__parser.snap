@@ -1,0 +1,10 @@
+---
+source: src/parser/tests/mod.rs
+expression: Snapshot(&expr)
+---
+Div {
+  N: 
+    IntermediateExpr { Variable("a") }
+  D: 
+    IntermediateExpr { Variable("b") }
+}

@@ -71,6 +71,7 @@ impl std::fmt::Display for Snapshot<Span> {
 }
 
 test_snap!(skip_whitespace, "   alpha   24.42");
+test_snap!(division, "a/b");
 
 #[test]
 fn perf() {

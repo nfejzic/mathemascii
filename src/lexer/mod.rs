@@ -5,7 +5,7 @@ mod token;
 
 use crate::scanner::{Scan, Symbol};
 
-use token::{Token, TokenKind};
+pub(crate) use token::{Token, TokenKind};
 
 use self::keywords::{
     accents::Accents, arrows::Arrows, font_commands::FontCommands, functions::Functions,
@@ -13,12 +13,12 @@ use self::keywords::{
     relations::Relations, Keyword, KeywordKind,
 };
 
-mod keywords;
+pub(crate) mod keywords;
 
 #[derive(Debug, Default, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub(crate) struct Span {
-    start: usize,
-    end: usize,
+pub struct Span {
+    pub start: usize,
+    pub end: usize,
 }
 
 /// Iterator that finds and returns tokens in AsciiMath input.
@@ -214,10 +214,6 @@ impl<'src> TokenIterator<'src> {
         let token = Token::with_span(sym.content, TokenKind::Variable, span);
 
         Some((token, self.curr + 1))
-    }
-
-    pub(crate) fn finished(&self) -> bool {
-        self.curr == self.src.len()
     }
 }
 

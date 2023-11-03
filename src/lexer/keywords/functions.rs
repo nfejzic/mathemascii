@@ -21,6 +21,7 @@ generate_impl!(
     "csch" => CscH,
     "coth" => CotH,
     "exp" => Exp,
+    "lim" => Lim,
     "log" => Log,
     "ln" => Ln,
     "det" => Det,
