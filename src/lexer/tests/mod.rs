@@ -1,4 +1,4 @@
-use crate::lexer::{token::Token, Tokenize};
+use crate::lexer::{token::Token, TokenIterator};
 
 use super::Span;
 
@@ -19,7 +19,7 @@ macro_rules! test_snap {
         #[test]
         fn $name() {
             let input = &$input;
-            let tokens: Vec<_> = input.tokenize().collect();
+            let tokens: Vec<_> = $crate::lexer::TokenIterator::tokenize(input).collect();
             insta::assert_display_snapshot!(Snapshot((*input, tokens)));
         }
     };
@@ -78,7 +78,7 @@ fn perf() {
     let src = "gammag gammag gammag gammag gammag ".repeat(1_000);
     let src = &src.as_str();
 
-    let tokens = src.tokenize();
+    let tokens = TokenIterator::tokenize(src);
 
     assert_eq!(tokens.count(), 10_000);
 }

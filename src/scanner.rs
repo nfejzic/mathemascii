@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 /// Symbol found in the source input.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Symbol<'src> {
@@ -66,16 +68,34 @@ impl<'src> Symbol<'src> {
     }
 }
 
-pub trait Scan {
-    fn scan(&self) -> Vec<Symbol>;
+pub struct Symbols<'src>(pub(crate) Vec<Symbol<'src>>);
+
+impl<'s> From<Vec<Symbol<'s>>> for Symbols<'s> {
+    fn from(value: Vec<Symbol<'s>>) -> Self {
+        Symbols(value)
+    }
 }
 
-impl<S> Scan for &S
+impl<'src> Deref for Symbols<'src> {
+    type Target = <Vec<Symbol<'src>> as Deref>::Target;
+
+    fn deref(&self) -> &Self::Target {
+        self.0.deref()
+    }
+}
+
+impl<'src, T> From<&'src T> for Symbols<'src>
 where
-    S: AsRef<str>,
+    T: AsRef<str>,
 {
-    fn scan(&self) -> Vec<Symbol> {
-        scan_str(self)
+    fn from(value: &'src T) -> Self {
+        Symbols(scan_str(value.as_ref()))
+    }
+}
+
+impl<'src> From<&'src str> for Symbols<'src> {
+    fn from(value: &'src str) -> Self {
+        Symbols(scan_str(value))
     }
 }
 

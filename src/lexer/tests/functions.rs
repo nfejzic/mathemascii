@@ -1,7 +1,5 @@
 use super::Snapshot;
 
-use super::super::*;
-
 super::test_snap!(sin_cos, "sincos");
 super::test_snap!(f_g, "fg");
 super::test_snap!(ln_log, "ln logln");

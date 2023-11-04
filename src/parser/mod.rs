@@ -8,8 +8,8 @@ mod unary;
 mod var;
 
 use crate::{
-    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind, Tokenize},
-    scanner::Scan,
+    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind},
+    scanner::Symbols,
 };
 
 use self::{
@@ -25,9 +25,12 @@ pub struct AsciiMath<'src> {
 }
 
 impl<'s> AsciiMath<'s> {
-    pub(crate) fn parse<S: Scan>(input: &'s S) -> Self {
+    pub(crate) fn parse<S>(input: S) -> Self
+    where
+        S: Into<Symbols<'s>>,
+    {
         AsciiMath {
-            iter: input.tokenize().peekable(),
+            iter: TokenIterator::tokenize(input).peekable(),
         }
     }
 

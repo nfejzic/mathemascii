@@ -3,7 +3,7 @@
 mod next_impl;
 mod token;
 
-use crate::scanner::{Scan, Symbol};
+use crate::scanner::{Symbol, Symbols};
 
 pub(crate) use token::{Token, TokenKind};
 
@@ -33,23 +33,17 @@ pub(crate) struct TokenIterator<'src> {
     span: Span,
 }
 
-pub(crate) trait Tokenize {
-    fn tokenize(&self) -> TokenIterator;
-}
-
-impl<T: ?Sized> Tokenize for T
-where
-    T: Scan,
-{
-    fn tokenize(&self) -> TokenIterator {
+impl<'src> TokenIterator<'src> {
+    pub fn tokenize<S>(input: S) -> Self
+    where
+        S: Into<Symbols<'src>>,
+    {
         TokenIterator {
-            src: self.scan(),
+            src: input.into().0,
             ..Default::default()
         }
     }
-}
 
-impl<'src> TokenIterator<'src> {
     fn skip_whitespace(&mut self) {
         loop {
             match self.src.get(self.curr) {

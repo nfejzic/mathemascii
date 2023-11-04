@@ -1,7 +1,5 @@
 use super::Snapshot;
 
-use crate::lexer::Tokenize;
-
 super::test_snap!(roots, "sqrtroot");
 super::test_snap!(calculus, "int oint del grad oo |...|");
 super::test_snap!(shapes, "square diamond triangle /_\\ frown /_");

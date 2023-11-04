@@ -14,10 +14,10 @@ macro_rules! test_snap {
     ($name:ident, $input:literal) => {
         #[test]
         fn $name() {
-            let input = &$input;
-            let math = $crate::parse(&input);
+            let input = $input;
+            let math = $crate::parse(input);
 
-            insta::assert_display_snapshot!(Snapshot((*input, math)));
+            insta::assert_display_snapshot!(Snapshot((input, math)));
         }
     };
 }
