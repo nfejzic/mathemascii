@@ -8,6 +8,7 @@ use super::{
     AsciiMath,
 };
 
+mod binary;
 mod sub_sup_scripts;
 mod unary;
 
@@ -24,6 +25,10 @@ macro_rules! test_snap {
 }
 
 use test_snap;
+
+fn indent(num: usize) -> String {
+    "| ".repeat(num)
+}
 
 struct Snapshot<T>(T);
 
@@ -56,15 +61,13 @@ impl std::fmt::Display for Snapshot<&Vec<Expr>> {
 
 impl std::fmt::Display for Snapshot<&Expr> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let indent = "  ";
-
         match &self.0 {
             Expr::Interm(intermediate) => {
                 f.write_str("Interm {\n")?;
 
                 let interm: String = format!("{}", Snapshot(intermediate))
                     .lines()
-                    .map(|l| format!("{indent}{l}"))
+                    .map(|l| format!("{}{l}", indent(1)))
                     .collect::<Vec<_>>()
                     .join("\n");
 
@@ -76,27 +79,27 @@ impl std::fmt::Display for Snapshot<&Expr> {
 
             Expr::Div {
                 numerator,
-                denumerator,
+                denominator: denumerator,
             } => {
                 f.write_str("Div {\n")?;
-                f.write_str(indent)?;
+                f.write_str(&indent(1))?;
                 f.write_str("N: \n")?;
 
                 let num: String = format!("{}", Snapshot(numerator))
                     .lines()
-                    .map(|l| format!("{indent}{indent}{l}"))
+                    .map(|l| format!("{}{l}", indent(2)))
                     .collect::<Vec<_>>()
                     .join("\n");
 
                 f.write_str(&num)?;
 
                 f.write_str("\n")?;
-                f.write_str(indent)?;
+                f.write_str(&indent(1))?;
                 f.write_str("D: \n")?;
 
                 let den = format!("{}", Snapshot(denumerator))
                     .lines()
-                    .map(|l| format!("{indent}{indent}{l}"))
+                    .map(|l| format!("{}{l}", indent(2)))
                     .collect::<Vec<_>>()
                     .join("\n");
 
@@ -113,24 +116,22 @@ impl std::fmt::Display for Snapshot<&Expr> {
 
 impl std::fmt::Display for Snapshot<&IntermediateExpr> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let indent = "  ";
-
         f.write_str("IntermExpr {\n")?;
 
         let val = format!("{}", Snapshot(&self.0.val))
             .lines()
-            .map(|l| format!("{indent}{l}"))
+            .map(|l| format!("{}{l}", indent(1)))
             .collect::<Vec<_>>()
             .join("\n");
 
         f.write_str(&val)?;
 
         if let Some(subscript) = &self.0.subscript {
-            f.write_fmt(format_args!("\n{indent}{indent}sub:\n"))?;
+            f.write_fmt(format_args!("\n{}sub:\n", indent(2)))?;
 
             let subscript = format!("{}", Snapshot(subscript))
                 .lines()
-                .map(|l| format!("{indent}{indent}{indent}{l}"))
+                .map(|l| format!("{}{l}", indent(3)))
                 .collect::<Vec<_>>()
                 .join("\n");
 
@@ -138,11 +139,11 @@ impl std::fmt::Display for Snapshot<&IntermediateExpr> {
         }
 
         if let Some(ref supscript) = self.0.supscript {
-            f.write_fmt(format_args!("\n{indent}{indent}sub:\n"))?;
+            f.write_fmt(format_args!("\n{}sup:\n", indent(2)))?;
 
             let supscript = format!("{}", Snapshot(supscript))
                 .lines()
-                .map(|l| format!("{indent}{indent}{indent}{l}"))
+                .map(|l| format!("{}{l}", indent(3)))
                 .collect::<Vec<_>>()
                 .join("\n");
 
@@ -166,12 +167,11 @@ impl std::fmt::Display for Snapshot<&SimpleExpr> {
                 expr,
                 span: _,
             } => {
-                let indent = "  ";
                 f.write_fmt(format_args!("{:?}\n", left_grouping))?;
 
                 let expr = format!("{}", Snapshot(expr))
                     .lines()
-                    .map(|l| format!("{indent}{l}"))
+                    .map(|l| format!("{}{l}", indent(1)))
                     .collect::<Vec<_>>()
                     .join("\n");
 
@@ -211,13 +211,12 @@ impl std::fmt::Display for Snapshot<VarKind> {
 
 impl std::fmt::Display for Snapshot<&Unary> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let indent = "  ";
         f.write_fmt(format_args!("{:?}", self.0.kind))?;
         f.write_str("(\n")?;
 
         let expr = format!("{}", Snapshot(&*self.0.expr))
             .lines()
-            .map(|l| format!("{indent}{l}"))
+            .map(|l| format!("{}{l}", indent(1)))
             .collect::<Vec<_>>()
             .join("\n");
 
@@ -232,11 +231,25 @@ impl std::fmt::Display for Snapshot<&Unary> {
 impl std::fmt::Display for Snapshot<&Binary> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("{:?}", self.0.kind))?;
-        f.write_str("(")?;
-        f.write_fmt(format_args!("{}", Snapshot(&*self.0.expr_1)))?;
-        f.write_str(", ")?;
-        f.write_fmt(format_args!("{}", Snapshot(&*self.0.expr_2)))?;
-        f.write_str(")")?;
+        f.write_str("(\n")?;
+
+        let expr_1 = format!("{}", Snapshot(&*self.0.expr_1))
+            .lines()
+            .map(|l| format!("{}{l}", indent(1)))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        let expr_2 = format!("{}", Snapshot(&*self.0.expr_2))
+            .lines()
+            .map(|l| format!("{}{l}", indent(1)))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        f.write_str(&expr_1)?;
+        f.write_str(",\n")?;
+        f.write_str(&expr_2)?;
+
+        f.write_str("\n)")?;
 
         Ok(())
     }

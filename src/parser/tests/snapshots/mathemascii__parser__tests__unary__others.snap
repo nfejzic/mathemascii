@@ -5,17 +5,17 @@ expression: "Snapshot((input, math))"
 sqrt x text(some text)
 
 Interm {
-  IntermExpr {
-    SquareRoot(
-      Variable("x")
-    )
-  }
+| IntermExpr {
+| | SquareRoot(
+| | | Variable("x")
+| | )
+| }
 }
 
 Interm {
-  IntermExpr {
-    Text("some text")
-  }
+| IntermExpr {
+| | Text("some text")
+| }
 }
 
 

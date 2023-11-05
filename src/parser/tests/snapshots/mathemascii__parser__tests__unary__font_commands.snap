@@ -5,11 +5,11 @@ expression: "Snapshot((input, math))"
 fr text(other text)
 
 Interm {
-  IntermExpr {
-    Gothic(
-      Text("other text")
-    )
-  }
+| IntermExpr {
+| | Gothic(
+| | | Text("other text")
+| | )
+| }
 }
 
 

@@ -5,39 +5,41 @@ expression: "Snapshot((input, math))"
 abs(x) floor(x) norm x
 
 Interm {
-  IntermExpr {
-    Absolute(
-      OpenParen
-        Interm {
-          IntermExpr {
-            Variable("x")
-          }
-        }
-      CloseParen
-    )
-  }
+| IntermExpr {
+| | Absolute(
+| | | OpenParen
+| | | | Interm {
+| | | | | IntermExpr {
+| | | | | | Variable("x")
+| | | | | }
+| | | | }
+| | | |
+| | | CloseParen
+| | )
+| }
 }
 
 Interm {
-  IntermExpr {
-    Floor(
-      OpenParen
-        Interm {
-          IntermExpr {
-            Variable("x")
-          }
-        }
-      CloseParen
-    )
-  }
+| IntermExpr {
+| | Floor(
+| | | OpenParen
+| | | | Interm {
+| | | | | IntermExpr {
+| | | | | | Variable("x")
+| | | | | }
+| | | | }
+| | | |
+| | | CloseParen
+| | )
+| }
 }
 
 Interm {
-  IntermExpr {
-    Norm(
-      Variable("x")
-    )
-  }
+| IntermExpr {
+| | Norm(
+| | | Variable("x")
+| | )
+| }
 }
 
 

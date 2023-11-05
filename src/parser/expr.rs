@@ -61,7 +61,7 @@ pub enum Expr {
 
     Div {
         numerator: IntermediateExpr,
-        denumerator: IntermediateExpr,
+        denominator: IntermediateExpr,
     },
 }
 
@@ -72,7 +72,7 @@ impl Expr {
 
             Expr::Div {
                 numerator,
-                denumerator,
+                denominator: denumerator,
             } => {
                 let start = numerator.span().start;
                 let end = denumerator.span().end;

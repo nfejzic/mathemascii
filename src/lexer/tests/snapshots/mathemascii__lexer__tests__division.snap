@@ -8,7 +8,7 @@ a
 ^ -> Variable at: 0 -> 1
 
  /
- ^ -> Other(Fraction) at: 1 -> 2
+ ^ -> Other(ForwardSlash) at: 1 -> 2
 
   b
   ^ -> Variable at: 2 -> 3

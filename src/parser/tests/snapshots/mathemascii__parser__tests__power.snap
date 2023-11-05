@@ -1,15 +1,15 @@
 ---
 source: src/parser/tests/mod.rs
-expression: "Snapshot((*input, math))"
+expression: "Snapshot((input, math))"
 ---
 a^b
 
 Interm {
-  IntermExpr {
-    Variable("a")
-      sub:
-        Variable("b")
-  }
+| IntermExpr {
+| | Variable("a")
+| | | sup:
+| | | | Variable("b")
+| }
 }
 
 

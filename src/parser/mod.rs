@@ -8,7 +8,10 @@ mod unary;
 mod var;
 
 use crate::{
-    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind},
+    lexer::{
+        keywords::{groupings::Grouping, others::Other},
+        Span, TokenIterator, TokenKind,
+    },
     scanner::Symbols,
 };
 
@@ -145,15 +148,45 @@ impl<'s> AsciiMath<'s> {
         let interm = self.parse_interm_expr()?;
 
         if let Some(next_token) = self.iter.peek() {
-            if matches!(next_token.kind(), TokenKind::Other(Other::Fraction)) {
-                // I/I case
-                self.iter.next(); // skip fraction token
-                let next_interm = self.parse_interm_expr()?;
+            if matches!(next_token.kind(), TokenKind::Other(Other::ForwardSlash)) {
+                // I/I case -> fraction
+                let numerator = Expr::Interm(interm);
+                let numer_span = numerator.span();
 
-                return Some(Expr::Div {
-                    numerator: interm,
-                    denumerator: next_interm,
-                });
+                self.iter.next(); // skip '/' token
+                let denominator = self.parse_expr()?;
+
+                let start = numerator.span().start;
+                let end = denominator.span().end;
+
+                // treat intermediate expressions as parenthesised expressions passed to frac:
+                // a_b/c_d == (a_b)/(c_d) == frac{a_b}{c_d}
+                let numerator = SimpleExpr::Grouping {
+                    left_grouping: Grouping::OpenParen,
+                    right_grouping: Grouping::CloseParen,
+                    expr: vec![numerator],
+                    span: numer_span,
+                };
+
+                let denominator = SimpleExpr::Grouping {
+                    left_grouping: Grouping::OpenParen,
+                    right_grouping: Grouping::CloseParen,
+                    expr: vec![denominator],
+                    span: numerator.span(),
+                };
+
+                let binary = Binary {
+                    kind: BinaryKind::Fraction,
+                    expr_1: Box::new(numerator),
+                    expr_2: Box::new(denominator),
+                    span: Span { start, end },
+                };
+
+                return Some(Expr::Interm(IntermediateExpr {
+                    val: SimpleExpr::Binary(binary),
+                    subscript: None,
+                    supscript: None,
+                }));
             }
         }
 

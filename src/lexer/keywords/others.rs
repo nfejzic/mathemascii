@@ -8,7 +8,8 @@ use super::macros::generate_impl;
 generate_impl!(
     Other,
     Others,
-    "/" | "frac" => Fraction,
+    "frac" => Fraction,
+    "/" => ForwardSlash,
     "^" => Power,
     "_" => Subscript,
     "sqrt" => SquareRoot,
@@ -46,7 +47,7 @@ generate_impl!(
     "text" => Text,
     "\"" => Quote,
     prefixes:
-        Fraction => "/_",
+        ForwardSlash => "/_",
         Subscript => "__|",
         Angle => "/_\\"
 );

@@ -1,31 +1,32 @@
 ---
 source: src/parser/tests/sub_sup_scripts.rs
-expression: "Snapshot((*input, math))"
+expression: "Snapshot((input, math))"
 ---
 (n->oo)
 
 Interm {
-  IntermExpr {
-    OpenParen
-      Interm {
-        IntermExpr {
-          Variable("n")
-        }
-      }
-      
-      Interm {
-        IntermExpr {
-          Arrow(To)
-        }
-      }
-      
-      Interm {
-        IntermExpr {
-          Other(Infinity)
-        }
-      }
-    CloseParen
-  }
+| IntermExpr {
+| | OpenParen
+| | | Interm {
+| | | | IntermExpr {
+| | | | | Variable("n")
+| | | | }
+| | | }
+| | | 
+| | | Interm {
+| | | | IntermExpr {
+| | | | | Arrow(To)
+| | | | }
+| | | }
+| | | 
+| | | Interm {
+| | | | IntermExpr {
+| | | | | Other(Infinity)
+| | | | }
+| | | }
+| | |
+| | CloseParen
+| }
 }
 
 

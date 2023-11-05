@@ -1,8 +1,17 @@
 ---
-source: src/parser/tests/mod.rs
+source: src/parser/tests/binary.rs
 expression: "Snapshot((input, math))"
 ---
-a/b
+frac 1.44 2 frac(x)(3.14)
+
+Interm {
+| IntermExpr {
+| | Fraction(
+| | | Number("1.44"),
+| | | Number("2")
+| | )
+| }
+}
 
 Interm {
 | IntermExpr {
@@ -10,7 +19,7 @@ Interm {
 | | | OpenParen
 | | | | Interm {
 | | | | | IntermExpr {
-| | | | | | Variable("a")
+| | | | | | Variable("x")
 | | | | | }
 | | | | }
 | | | |
@@ -18,7 +27,7 @@ Interm {
 | | | OpenParen
 | | | | Interm {
 | | | | | IntermExpr {
-| | | | | | Variable("b")
+| | | | | | Number("3.14")
 | | | | | }
 | | | | }
 | | | |

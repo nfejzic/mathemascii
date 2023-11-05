@@ -10,7 +10,7 @@ generate_impl!(
     "*" | "cdot" => Dot,
     "**" | "ast" => Asterisk,
     "***" | "star" => Star,
-    "//" => ForwardSlash,
+    "//" => ForwardSlashLiteral,
     "\\" | "backslash" | "setminus" => Backslash,
     "xx" | "times" => Times,
     "-:" | "div" => Divide,
