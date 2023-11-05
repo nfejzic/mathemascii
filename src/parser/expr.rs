@@ -9,7 +9,7 @@ pub enum SimpleExpr {
     Grouping {
         left_grouping: Grouping,
         right_grouping: Grouping,
-        expr: Vec<Expr>,
+        expr: Vec<Expression>,
         span: Span,
     },
 
@@ -35,13 +35,13 @@ impl SimpleExpr {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct IntermediateExpr {
+pub struct Expression {
     pub(crate) val: SimpleExpr,
     pub(crate) subscript: Option<SimpleExpr>,
     pub(crate) supscript: Option<SimpleExpr>,
 }
 
-impl IntermediateExpr {
+impl Expression {
     pub fn span(&self) -> Span {
         let span = self.val.span();
         let start = span.start;
@@ -52,32 +52,5 @@ impl IntermediateExpr {
         }
 
         Span { start, end }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Expr {
-    Interm(IntermediateExpr),
-
-    Div {
-        numerator: IntermediateExpr,
-        denominator: IntermediateExpr,
-    },
-}
-
-impl Expr {
-    pub fn span(&self) -> Span {
-        match self {
-            Expr::Interm(intermediate) => intermediate.span(),
-
-            Expr::Div {
-                numerator,
-                denominator: denumerator,
-            } => {
-                let start = numerator.span().start;
-                let end = denumerator.span().end;
-                Span { start, end }
-            }
-        }
     }
 }

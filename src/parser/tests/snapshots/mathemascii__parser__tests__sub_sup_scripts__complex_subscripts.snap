@@ -4,60 +4,44 @@ expression: "Snapshot((input, math))"
 ---
 lim_(N->oo) sum_(i=0)^N
 
-Interm {
-| IntermExpr {
-| | Function(Lim)
-| | | sub:
-| | | | OpenParen
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Variable("N")
-| | | | | | }
-| | | | | }
-| | | | | 
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Arrow(To)
-| | | | | | }
-| | | | | }
-| | | | | 
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Other(Infinity)
-| | | | | | }
-| | | | | }
-| | | | |
-| | | | CloseParen
-| }
+Expression {
+| Function(Lim)
+| | sub:
+| | | OpenParen
+| | | | Expression {
+| | | | | Variable("N")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Arrow(To)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Infinity)
+| | | | }
+| | | |
+| | | CloseParen
 }
 
-Interm {
-| IntermExpr {
-| | Operator(Sum)
-| | | sub:
-| | | | OpenParen
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Variable("i")
-| | | | | | }
-| | | | | }
-| | | | | 
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Relation(Eq)
-| | | | | | }
-| | | | | }
-| | | | | 
-| | | | | Interm {
-| | | | | | IntermExpr {
-| | | | | | | Number("0")
-| | | | | | }
-| | | | | }
-| | | | |
-| | | | CloseParen
-| | | sup:
-| | | | Variable("N")
-| }
+Expression {
+| Operator(Sum)
+| | sub:
+| | | OpenParen
+| | | | Expression {
+| | | | | Variable("i")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Relation(Eq)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Number("0")
+| | | | }
+| | | |
+| | | CloseParen
+| | sup:
+| | | Variable("N")
 }
 
 

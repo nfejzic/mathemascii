@@ -4,27 +4,21 @@ expression: "Snapshot((input, math))"
 ---
 a/b
 
-Interm {
-| IntermExpr {
-| | Fraction(
-| | | OpenParen
-| | | | Interm {
-| | | | | IntermExpr {
-| | | | | | Variable("a")
-| | | | | }
-| | | | }
-| | | |
-| | | CloseParen,
-| | | OpenParen
-| | | | Interm {
-| | | | | IntermExpr {
-| | | | | | Variable("b")
-| | | | | }
-| | | | }
-| | | |
-| | | CloseParen
-| | )
-| }
+Expression {
+| Fraction(
+| | OpenParen
+| | | Expression {
+| | | | Variable("a")
+| | | }
+| | |
+| | CloseParen,
+| | OpenParen
+| | | Expression {
+| | | | Variable("b")
+| | | }
+| | |
+| | CloseParen
+| )
 }
 
 

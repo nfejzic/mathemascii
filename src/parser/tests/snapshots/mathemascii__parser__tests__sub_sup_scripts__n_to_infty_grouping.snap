@@ -4,29 +4,21 @@ expression: "Snapshot((input, math))"
 ---
 (n->oo)
 
-Interm {
-| IntermExpr {
-| | OpenParen
-| | | Interm {
-| | | | IntermExpr {
-| | | | | Variable("n")
-| | | | }
-| | | }
-| | | 
-| | | Interm {
-| | | | IntermExpr {
-| | | | | Arrow(To)
-| | | | }
-| | | }
-| | | 
-| | | Interm {
-| | | | IntermExpr {
-| | | | | Other(Infinity)
-| | | | }
-| | | }
-| | |
-| | CloseParen
-| }
+Expression {
+| OpenParen
+| | Expression {
+| | | Variable("n")
+| | }
+| | 
+| | Expression {
+| | | Arrow(To)
+| | }
+| | 
+| | Expression {
+| | | Other(Infinity)
+| | }
+| |
+| CloseParen
 }
 
 

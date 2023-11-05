@@ -17,7 +17,7 @@ use crate::{
 
 use self::{
     binary::{Binary, BinaryKind},
-    expr::{Expr, IntermediateExpr, SimpleExpr},
+    expr::{Expression, SimpleExpr},
     unary::{Unary, UnaryKind},
     var::Var,
 };
@@ -116,7 +116,7 @@ impl<'s> AsciiMath<'s> {
         None
     }
 
-    fn parse_interm_expr(&mut self) -> Option<IntermediateExpr> {
+    fn parse_interm_expr(&mut self) -> Option<Expression> {
         let s_expr = self.parse_simple_expr()?;
 
         let subscript = match self.iter.peek() {
@@ -135,7 +135,7 @@ impl<'s> AsciiMath<'s> {
             _ => None,
         };
 
-        let interm = IntermediateExpr {
+        let interm = Expression {
             val: s_expr,
             subscript,
             supscript,
@@ -144,13 +144,13 @@ impl<'s> AsciiMath<'s> {
         Some(interm)
     }
 
-    fn parse_expr(&mut self) -> Option<Expr> {
+    fn parse_expr(&mut self) -> Option<Expression> {
         let interm = self.parse_interm_expr()?;
 
         if let Some(next_token) = self.iter.peek() {
             if matches!(next_token.kind(), TokenKind::Other(Other::ForwardSlash)) {
                 // I/I case -> fraction
-                let numerator = Expr::Interm(interm);
+                let numerator = interm;
                 let numer_span = numerator.span();
 
                 self.iter.next(); // skip '/' token
@@ -182,20 +182,20 @@ impl<'s> AsciiMath<'s> {
                     span: Span { start, end },
                 };
 
-                return Some(Expr::Interm(IntermediateExpr {
+                return Some(Expression {
                     val: SimpleExpr::Binary(binary),
                     subscript: None,
                     supscript: None,
-                }));
+                });
             }
         }
 
-        Some(Expr::Interm(interm))
+        Some(interm)
     }
 }
 
 impl Iterator for AsciiMath<'_> {
-    type Item = Expr;
+    type Item = Expression;
 
     fn next(&mut self) -> Option<Self::Item> {
         self.parse_expr()

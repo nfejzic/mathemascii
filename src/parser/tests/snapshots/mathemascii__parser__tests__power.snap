@@ -4,12 +4,10 @@ expression: "Snapshot((input, math))"
 ---
 a^b
 
-Interm {
-| IntermExpr {
-| | Variable("a")
-| | | sup:
-| | | | Variable("b")
-| }
+Expression {
+| Variable("a")
+| | sup:
+| | | Variable("b")
 }
 
 

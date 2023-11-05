@@ -2,7 +2,7 @@ use crate::lexer::TokenKind;
 
 use super::{
     binary::Binary,
-    expr::{Expr, IntermediateExpr, SimpleExpr},
+    expr::{Expression, SimpleExpr},
     unary::Unary,
     var::{Var, VarKind},
     AsciiMath,
@@ -48,7 +48,7 @@ impl std::fmt::Display for Snapshot<(&str, AsciiMath<'_>)> {
     }
 }
 
-impl std::fmt::Display for Snapshot<&Vec<Expr>> {
+impl std::fmt::Display for Snapshot<&Vec<Expression>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for expr in self.0 {
             f.write_fmt(format_args!("{}", Snapshot(expr)))?;
@@ -59,64 +59,9 @@ impl std::fmt::Display for Snapshot<&Vec<Expr>> {
     }
 }
 
-impl std::fmt::Display for Snapshot<&Expr> {
+impl std::fmt::Display for Snapshot<&Expression> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.0 {
-            Expr::Interm(intermediate) => {
-                f.write_str("Interm {\n")?;
-
-                let interm: String = format!("{}", Snapshot(intermediate))
-                    .lines()
-                    .map(|l| format!("{}{l}", indent(1)))
-                    .collect::<Vec<_>>()
-                    .join("\n");
-
-                f.write_str(&interm)?;
-
-                f.write_str("\n")?;
-                f.write_str("}")?;
-            }
-
-            Expr::Div {
-                numerator,
-                denominator: denumerator,
-            } => {
-                f.write_str("Div {\n")?;
-                f.write_str(&indent(1))?;
-                f.write_str("N: \n")?;
-
-                let num: String = format!("{}", Snapshot(numerator))
-                    .lines()
-                    .map(|l| format!("{}{l}", indent(2)))
-                    .collect::<Vec<_>>()
-                    .join("\n");
-
-                f.write_str(&num)?;
-
-                f.write_str("\n")?;
-                f.write_str(&indent(1))?;
-                f.write_str("D: \n")?;
-
-                let den = format!("{}", Snapshot(denumerator))
-                    .lines()
-                    .map(|l| format!("{}{l}", indent(2)))
-                    .collect::<Vec<_>>()
-                    .join("\n");
-
-                f.write_str(&den)?;
-
-                f.write_str("\n")?;
-                f.write_str("}")?;
-            }
-        }
-
-        Ok(())
-    }
-}
-
-impl std::fmt::Display for Snapshot<&IntermediateExpr> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("IntermExpr {\n")?;
+        f.write_str("Expression {\n")?;
 
         let val = format!("{}", Snapshot(&self.0.val))
             .lines()
