@@ -1,0 +1,15 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+fr text(other text)
+
+Interm {
+  IntermExpr {
+    Gothic(
+      Text("other text")
+    )
+  }
+}
+
+

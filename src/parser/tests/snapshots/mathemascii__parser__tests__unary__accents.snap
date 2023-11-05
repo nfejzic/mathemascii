@@ -1,0 +1,31 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+hat x vec x tilde x
+
+Interm {
+  IntermExpr {
+    Hat(
+      Variable("x")
+    )
+  }
+}
+
+Interm {
+  IntermExpr {
+    Vector(
+      Variable("x")
+    )
+  }
+}
+
+Interm {
+  IntermExpr {
+    Tilde(
+      Variable("x")
+    )
+  }
+}
+
+

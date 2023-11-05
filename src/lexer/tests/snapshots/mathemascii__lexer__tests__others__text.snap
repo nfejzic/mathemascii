@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((*input, tokens))"
+---
+text(some text) "also text"
+
+some text
+^^^^^^^^^ -> Other(Text) at: 0 -> 15
+
+                also text
+                ^^^^^^^^^ -> Other(Text) at: 16 -> 27
+
+

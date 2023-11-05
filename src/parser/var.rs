@@ -19,6 +19,7 @@ pub enum VarKind {
     Logical(Logical),
     Operator(Operator),
     Other(Other),
+    Text(String),
 }
 
 impl TryFrom<Token<'_>> for VarKind {
@@ -34,7 +35,10 @@ impl TryFrom<Token<'_>> for VarKind {
             TokenKind::Relation(r) => Self::Relation(r),
             TokenKind::Logical(l) => Self::Logical(l),
             TokenKind::Operator(op) => Self::Operator(op),
-            TokenKind::Other(other) if token.is_var() => Self::Other(other),
+            TokenKind::Other(other) if token.is_var() => match other {
+                Other::Text => Self::Text(token.as_str().into()),
+                _ => Self::Other(other),
+            },
 
             _ => return Err(()),
         };

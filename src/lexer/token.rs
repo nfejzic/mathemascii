@@ -51,12 +51,7 @@ impl Token<'_> {
             | TokenKind::Operator(_) => true,
             TokenKind::Other(other) => !matches!(
                 other,
-                Other::Fraction
-                    | Other::Power
-                    | Other::SquareRoot
-                    | Other::Root
-                    | Other::Quote
-                    | Other::Text
+                Other::Fraction | Other::Power | Other::SquareRoot | Other::Root
             ),
 
             _ => false,

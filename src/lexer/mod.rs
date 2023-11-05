@@ -8,9 +8,17 @@ use crate::scanner::{Symbol, Symbols};
 pub(crate) use token::{Token, TokenKind};
 
 use self::keywords::{
-    accents::Accents, arrows::Arrows, font_commands::FontCommands, functions::Functions,
-    greeks::Greeks, groupings::Groupings, logicals::Logicals, operators::Operators, others::Others,
-    relations::Relations, Keyword, KeywordKind,
+    accents::Accents,
+    arrows::Arrows,
+    font_commands::FontCommands,
+    functions::Functions,
+    greeks::Greeks,
+    groupings::Groupings,
+    logicals::Logicals,
+    operators::Operators,
+    others::{Other, Others},
+    relations::Relations,
+    Keyword, KeywordKind,
 };
 
 pub(crate) mod keywords;
@@ -182,7 +190,54 @@ impl<'src> TokenIterator<'src> {
     }
 
     fn lex_other(&self, min_len: usize) -> Option<(Token<'src>, usize)> {
-        self.lex_keyword::<Others>(min_len)
+        let (token, cursor) = self.lex_keyword::<Others>(min_len)?;
+
+        let TokenKind::Other(other) = token.kind() else {
+            return None;
+        };
+
+        if matches!(other, Other::Text | Other::Quote) {
+            let (content, new_cursor) = self.lex_text_content(cursor)?;
+
+            let span = Span {
+                start: self.curr,
+                end: new_cursor,
+            };
+
+            let token = Token::with_span(content, TokenKind::Other(Other::Text), span);
+            Some((token, new_cursor))
+        } else {
+            Some((token, cursor))
+        }
+    }
+
+    fn lex_text_content(&self, cursor: usize) -> Option<(&'src str, usize)> {
+        let next_sym = dbg!(self.src.get(cursor))?;
+
+        let closing_str = match next_sym.content {
+            "(" => ")",
+            _ => "\"",
+        };
+
+        let start_idx = if closing_str == ")" {
+            cursor + 1
+        } else {
+            cursor
+        };
+
+        let rest = self.src.get(start_idx..)?;
+        let closing = rest
+            .iter()
+            .enumerate()
+            .find(|(_, s)| s.content == closing_str)
+            .map(|(i, _)| i)?;
+
+        let closing = closing + start_idx;
+
+        let content_syms = self.src.get(start_idx..closing)?;
+        let content = Symbol::as_str(content_syms);
+
+        content.map(|c| (c, closing + 1))
     }
 
     fn lex_accent(&self, min_len: usize) -> Option<(Token<'src>, usize)> {

@@ -1,0 +1,21 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+sqrt x text(some text)
+
+Interm {
+  IntermExpr {
+    SquareRoot(
+      Variable("x")
+    )
+  }
+}
+
+Interm {
+  IntermExpr {
+    Text("some text")
+  }
+}
+
+

@@ -41,7 +41,9 @@ impl<'s> AsciiMath<'s> {
             return Some(SimpleExpr::Var(Var::parse(self)?));
         }
 
-        if let TokenKind::Grouping(grouping) = token.kind() {
+        if let (TokenKind::Grouping(grouping), Err(_)) =
+            (token.kind(), UnaryKind::try_from(token.kind()))
+        {
             let start = token.span().start;
 
             let _ = self.iter.next(); // skip open grouping token

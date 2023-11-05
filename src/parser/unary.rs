@@ -3,7 +3,7 @@ use crate::lexer::{
     Span, TokenKind,
 };
 
-use super::expr::SimpleExpr;
+use super::{expr::SimpleExpr, AsciiMath};
 
 /// Kinds of unary operators in Ascii math.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -22,7 +22,6 @@ pub(crate) enum UnaryKind {
 
     // others
     SquareRoot,
-    Text,
 
     // groupings
     Absolute,
@@ -68,7 +67,6 @@ impl TryFrom<Other> for UnaryKind {
     fn try_from(value: Other) -> Result<Self, Self::Error> {
         match value {
             Other::SquareRoot => Ok(Self::SquareRoot),
-            Other::Text => Ok(Self::Text),
 
             _ => Err(()),
         }
@@ -134,5 +132,38 @@ pub struct Unary {
 impl Unary {
     pub fn span(&self) -> Span {
         self.span
+    }
+
+    pub(crate) fn _parse(parser: &mut AsciiMath) -> Option<Self> {
+        let token = parser.iter.next()?;
+
+        let kind = UnaryKind::try_from(token.kind()).ok()?;
+
+        let _expr = match kind {
+            UnaryKind::Hat
+            | UnaryKind::Overline
+            | UnaryKind::Underline
+            | UnaryKind::Vector
+            | UnaryKind::Tilde
+            | UnaryKind::Dot
+            | UnaryKind::DoubleDot
+            | UnaryKind::Underbrace
+            | UnaryKind::Overbrace
+            | UnaryKind::Cancel
+            | UnaryKind::SquareRoot
+            | UnaryKind::Absolute
+            | UnaryKind::Floor
+            | UnaryKind::Ceiling
+            | UnaryKind::Norm => parser.parse_simple_expr()?,
+
+            UnaryKind::Bold => todo!(),
+            UnaryKind::BlackboardBold => todo!(),
+            UnaryKind::Calligraphic => todo!(),
+            UnaryKind::Typewriter => todo!(),
+            UnaryKind::Gothic => todo!(),
+            UnaryKind::SansSerif => todo!(),
+        };
+
+        todo!()
     }
 }

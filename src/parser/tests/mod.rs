@@ -9,6 +9,7 @@ use super::{
 };
 
 mod sub_sup_scripts;
+mod unary;
 
 macro_rules! test_snap {
     ($name:ident, $input:literal) => {
@@ -201,6 +202,7 @@ impl std::fmt::Display for Snapshot<VarKind> {
             VarKind::Logical(log) => format!("{:?}", TokenKind::from(*log)),
             VarKind::Operator(op) => format!("{:?}", TokenKind::from(*op)),
             VarKind::Other(ot) => format!("{:?}", TokenKind::from(*ot)),
+            VarKind::Text(t) => format!("'{t}'"),
         };
 
         f.write_str(&snap)
@@ -209,10 +211,19 @@ impl std::fmt::Display for Snapshot<VarKind> {
 
 impl std::fmt::Display for Snapshot<&Unary> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let indent = "  ";
         f.write_fmt(format_args!("{:?}", self.0.kind))?;
-        f.write_str("(")?;
-        f.write_fmt(format_args!("{}", Snapshot(&*self.0.expr)))?;
-        f.write_str(")")?;
+        f.write_str("(\n")?;
+
+        let expr = format!("{}", Snapshot(&*self.0.expr))
+            .lines()
+            .map(|l| format!("{indent}{l}"))
+            .collect::<Vec<_>>()
+            .join("\n");
+
+        f.write_str(&expr)?;
+
+        f.write_str("\n)")?;
 
         Ok(())
     }
