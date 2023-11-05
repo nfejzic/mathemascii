@@ -1,0 +1,106 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+{(2x,+,17y,=,23),(x,-,y,=,5):}
+
+Expression {
+| OpenBrace
+| | Expression {
+| | | OpenParen
+| | | | Expression {
+| | | | | Number("2")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("x")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Operator(Plus)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Number("17")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("y")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Relation(Eq)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Number("23")
+| | | | }
+| | | |
+| | | CloseParen
+| | }
+| | 
+| | Expression {
+| | | Other(Comma)
+| | }
+| | 
+| | Expression {
+| | | OpenParen
+| | | | Expression {
+| | | | | Variable("x")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Operator(Minus)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("y")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Relation(Eq)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Number("5")
+| | | | }
+| | | |
+| | | CloseParen
+| | }
+| |
+| CloseIgnored
+}
+
+

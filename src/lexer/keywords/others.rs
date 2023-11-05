@@ -8,6 +8,8 @@ use super::macros::generate_impl;
 generate_impl!(
     Other,
     Others,
+    "," => Comma,
+    "'" => Prime,
     "frac" => Fraction,
     "/" => ForwardSlash,
     "^" => Power,
@@ -28,6 +30,7 @@ generate_impl!(
     "|cdots|" => CenterDots,
     "vdots" => VerticalDots,
     "ddots" => DiagonalDots,
+    "|" => VerticalBar,
     "|\\|" => VerticalBars,
     "|quad|" => VerticalBarsWide,
     "/_" => Angle,
@@ -47,6 +50,7 @@ generate_impl!(
     "text" => Text,
     "\"" => Quote,
     prefixes:
+        VerticalBar => "|\\|",
         ForwardSlash => "/_",
         Subscript => "__|",
         Angle => "/_\\"

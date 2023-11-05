@@ -249,20 +249,34 @@ impl<'src> TokenIterator<'src> {
     }
 
     fn lex_variable(&self, _: usize) -> Option<(Token<'src>, usize)> {
-        let sym = self.src.get(self.curr)?;
+        let mut cursor = self.curr;
+
+        let sym = self.src.get(cursor)?;
 
         if !sym.is_letter() {
             return None;
         }
 
+        cursor += 1;
+
+        if sym.content == "d" {
+            // might be derivative
+            if let Some(sym) = self.src.get(cursor) {
+                if matches!(sym.content, "x" | "y" | "z" | "t") {
+                    cursor += 1;
+                }
+            }
+        }
+
         let span = Span {
             start: self.curr,
-            end: self.curr + 1,
+            end: cursor,
         };
 
-        let token = Token::with_span(sym.content, TokenKind::Variable, span);
+        let content = Symbol::as_str(self.src.get(self.curr..cursor)?)?;
+        let token = Token::with_span(content, TokenKind::Variable, span);
 
-        Some((token, self.curr + 1))
+        Some((token, cursor))
     }
 }
 

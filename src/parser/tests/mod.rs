@@ -9,6 +9,7 @@ use super::{
 };
 
 mod binary;
+mod special_cases;
 mod sub_sup_scripts;
 mod unary;
 

@@ -1,0 +1,82 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+[[a,b,|,c],[d,e,|,f]]
+
+Expression {
+| OpenBracket
+| | Expression {
+| | | OpenBracket
+| | | | Expression {
+| | | | | Variable("a")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("b")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(VerticalBar)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("c")
+| | | | }
+| | | |
+| | | CloseBracket
+| | }
+| | 
+| | Expression {
+| | | Other(Comma)
+| | }
+| | 
+| | Expression {
+| | | OpenBracket
+| | | | Expression {
+| | | | | Variable("d")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("e")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(VerticalBar)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Function(F)
+| | | | }
+| | | |
+| | | CloseBracket
+| | }
+| |
+| CloseBracket
+}
+
+
