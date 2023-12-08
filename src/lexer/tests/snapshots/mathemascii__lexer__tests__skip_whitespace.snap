@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/mod.rs
+expression: "Snapshot((input, tokens))"
+---
+   alpha   24.42
+
+   alpha
+   ^^^^^ -> Greek(Alpha) at: 3 -> 8
+
+           24.42
+           ^^^^^ -> Number at: 11 -> 16
+
+

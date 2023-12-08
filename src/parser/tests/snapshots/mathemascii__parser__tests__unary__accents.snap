@@ -1,0 +1,25 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+hat x vec x tilde x
+
+Expression {
+| Hat(
+| | Variable("x")
+| )
+}
+
+Expression {
+| Vector(
+| | Variable("x")
+| )
+}
+
+Expression {
+| Tilde(
+| | Variable("x")
+| )
+}
+
+

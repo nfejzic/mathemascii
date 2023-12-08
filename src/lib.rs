@@ -1,14 +1,14 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+mod lexer;
+mod parser;
+mod scanner;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+use parser::AsciiMath;
+use scanner::Symbols;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+/// Parse asciimath content into an abstract syntax tree.
+pub fn parse<'s, S>(input: S) -> AsciiMath<'s>
+where
+    S: Into<Symbols<'s>>,
+{
+    AsciiMath::parse(input)
 }

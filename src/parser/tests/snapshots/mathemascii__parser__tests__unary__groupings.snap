@@ -1,0 +1,35 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+abs(x) floor(x) norm x
+
+Expression {
+| Absolute(
+| | OpenParen
+| | | Expression {
+| | | | Variable("x")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+Expression {
+| Floor(
+| | OpenParen
+| | | Expression {
+| | | | Variable("x")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+Expression {
+| Norm(
+| | Variable("x")
+| )
+}
+
+

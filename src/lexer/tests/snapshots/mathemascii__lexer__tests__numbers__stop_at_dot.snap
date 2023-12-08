@@ -1,0 +1,10 @@
+---
+source: src/lexer/tests/numbers.rs
+expression: "Snapshot((input, tokens))"
+---
+24.42.
+
+24.42
+^^^^^ -> Number at: 0 -> 5
+
+

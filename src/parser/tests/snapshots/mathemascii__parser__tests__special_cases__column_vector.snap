@@ -1,0 +1,34 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+((a),(b))
+
+Expression {
+| OpenParen
+| | Expression {
+| | | OpenParen
+| | | | Expression {
+| | | | | Variable("a")
+| | | | }
+| | | |
+| | | CloseParen
+| | }
+| | 
+| | Expression {
+| | | Other(Comma)
+| | }
+| | 
+| | Expression {
+| | | OpenParen
+| | | | Expression {
+| | | | | Variable("b")
+| | | | }
+| | | |
+| | | CloseParen
+| | }
+| |
+| CloseParen
+}
+
+

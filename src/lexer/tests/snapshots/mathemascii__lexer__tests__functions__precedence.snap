@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/functions.rs
+expression: "Snapshot((input, tokens))"
+---
+gammag
+
+gamma
+^^^^^ -> Greek(Gamma) at: 0 -> 5
+
+     g
+     ^ -> Function(G) at: 5 -> 6
+
+

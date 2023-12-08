@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((input, tokens))"
+---
+^|__ __| |~ rceiling +-
+
+^
+^ -> Other(Power) at: 0 -> 1
+
+ |__
+ ^^^ -> Other(LeftFloor) at: 1 -> 4
+
+     __|
+     ^^^ -> Other(RightFloor) at: 5 -> 8
+
+         |~
+         ^^ -> Other(LeftCeiling) at: 9 -> 11
+
+            rceiling
+            ^^^^^^^^ -> Other(RightCeiling) at: 12 -> 20
+
+                     +-
+                     ^^ -> Other(PlusMinus) at: 21 -> 23
+
+

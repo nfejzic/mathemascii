@@ -1,0 +1,17 @@
+---
+source: src/parser/tests/unary.rs
+expression: "Snapshot((input, math))"
+---
+sqrt x text(some text)
+
+Expression {
+| SquareRoot(
+| | Variable("x")
+| )
+}
+
+Expression {
+| Text("some text")
+}
+
+

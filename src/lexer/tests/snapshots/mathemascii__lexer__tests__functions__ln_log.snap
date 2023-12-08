@@ -1,0 +1,16 @@
+---
+source: src/lexer/tests/functions.rs
+expression: "Snapshot((input, tokens))"
+---
+ln logln
+
+ln
+^^ -> Function(Ln) at: 0 -> 2
+
+   log
+   ^^^ -> Function(Log) at: 3 -> 6
+
+      ln
+      ^^ -> Function(Ln) at: 6 -> 8
+
+

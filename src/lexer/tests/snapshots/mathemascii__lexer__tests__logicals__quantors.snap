@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/logicals.rs
+expression: "Snapshot((input, tokens))"
+---
+AA EE forallexists AAEE
+
+AA
+^^ -> Logical(ForAll) at: 0 -> 2
+
+   EE
+   ^^ -> Logical(Exists) at: 3 -> 5
+
+      forall
+      ^^^^^^ -> Logical(ForAll) at: 6 -> 12
+
+            exists
+            ^^^^^^ -> Logical(Exists) at: 12 -> 18
+
+                   AA
+                   ^^ -> Logical(ForAll) at: 19 -> 21
+
+                     EE
+                     ^^ -> Logical(Exists) at: 21 -> 23
+
+

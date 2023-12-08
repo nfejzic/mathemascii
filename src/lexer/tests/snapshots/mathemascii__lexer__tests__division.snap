@@ -1,0 +1,16 @@
+---
+source: src/lexer/tests/mod.rs
+expression: "Snapshot((*input, tokens))"
+---
+a/b
+
+a
+^ -> Variable at: 0 -> 1
+
+ /
+ ^ -> Other(ForwardSlash) at: 1 -> 2
+
+  b
+  ^ -> Variable at: 2 -> 3
+
+

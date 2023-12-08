@@ -1,0 +1,22 @@
+---
+source: src/lexer/tests/relations.rs
+expression: "Snapshot((input, tokens))"
+---
+!in in sub sube supe
+
+!in
+^^^ -> Relation(NotIn) at: 0 -> 3
+
+    in
+    ^^ -> Relation(In) at: 4 -> 6
+
+       sub
+       ^^^ -> Relation(Subset) at: 7 -> 10
+
+           sube
+           ^^^^ -> Relation(SubsetEq) at: 11 -> 15
+
+                supe
+                ^^^^ -> Relation(SupersetEq) at: 16 -> 20
+
+

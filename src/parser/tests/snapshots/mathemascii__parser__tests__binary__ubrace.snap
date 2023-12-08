@@ -1,0 +1,49 @@
+---
+source: src/parser/tests/binary.rs
+expression: "Snapshot((input, math))"
+---
+ubrace(1+2+3+4)_("4 terms")
+
+Expression {
+| Underbrace(
+| | OpenParen
+| | | Expression {
+| | | | Number("1")
+| | | }
+| | | 
+| | | Expression {
+| | | | Operator(Plus)
+| | | }
+| | | 
+| | | Expression {
+| | | | Number("2")
+| | | }
+| | | 
+| | | Expression {
+| | | | Operator(Plus)
+| | | }
+| | | 
+| | | Expression {
+| | | | Number("3")
+| | | }
+| | | 
+| | | Expression {
+| | | | Operator(Plus)
+| | | }
+| | | 
+| | | Expression {
+| | | | Number("4")
+| | | }
+| | |
+| | CloseParen
+| )
+| | sub:
+| | | OpenParen
+| | | | Expression {
+| | | | | Text("4 terms")
+| | | | }
+| | | |
+| | | CloseParen
+}
+
+

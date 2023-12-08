@@ -1,0 +1,13 @@
+---
+source: src/parser/tests/mod.rs
+expression: "Snapshot((input, math))"
+---
+a^b
+
+Expression {
+| Variable("a")
+| | sup:
+| | | Variable("b")
+}
+
+

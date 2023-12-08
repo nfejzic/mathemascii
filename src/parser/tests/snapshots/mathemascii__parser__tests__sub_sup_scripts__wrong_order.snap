@@ -1,0 +1,34 @@
+---
+source: src/parser/tests/sub_sup_scripts.rs
+expression: "Snapshot((input, math))"
+---
+sum^N_(N->oo)
+
+Expression {
+| Operator(Sum)
+| | sup:
+| | | Variable("N")
+}
+
+Expression {
+| Other(Subscript)
+}
+
+Expression {
+| OpenParen
+| | Expression {
+| | | Variable("N")
+| | }
+| | 
+| | Expression {
+| | | Arrow(To)
+| | }
+| | 
+| | Expression {
+| | | Other(Infinity)
+| | }
+| |
+| CloseParen
+}
+
+

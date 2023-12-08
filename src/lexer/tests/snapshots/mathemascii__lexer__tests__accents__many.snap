@@ -1,0 +1,34 @@
+---
+source: src/lexer/tests/accents.rs
+expression: "Snapshot((input, tokens))"
+---
+hat bar ul vec ubrace obrace color ddot cancel
+
+hat
+^^^ -> Accent(Hat) at: 0 -> 3
+
+    bar
+    ^^^ -> Accent(Overline) at: 4 -> 7
+
+        ul
+        ^^ -> Accent(Underline) at: 8 -> 10
+
+           vec
+           ^^^ -> Accent(Vector) at: 11 -> 14
+
+               ubrace
+               ^^^^^^ -> Accent(Underbrace) at: 15 -> 21
+
+                      obrace
+                      ^^^^^^ -> Accent(Overbrace) at: 22 -> 28
+
+                             color
+                             ^^^^^ -> Accent(Color) at: 29 -> 34
+
+                                   ddot
+                                   ^^^^ -> Accent(DoubleDot) at: 35 -> 39
+
+                                        cancel
+                                        ^^^^^^ -> Accent(Cancel) at: 40 -> 46
+
+

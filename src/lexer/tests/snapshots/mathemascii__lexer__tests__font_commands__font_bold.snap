@@ -1,0 +1,19 @@
+---
+source: src/lexer/tests/font_commands.rs
+expression: "Snapshot((input, tokens))"
+---
+bb bbb mathbf mathbb
+
+bb
+^^ -> FontCommand(Bold) at: 0 -> 2
+
+   bbb
+   ^^^ -> FontCommand(BlackboardBold) at: 3 -> 6
+
+       mathbf
+       ^^^^^^ -> FontCommand(Bold) at: 7 -> 13
+
+              mathbb
+              ^^^^^^ -> FontCommand(BlackboardBold) at: 14 -> 20
+
+

@@ -1,0 +1,50 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+[[a,b],[c,d]]
+
+Expression {
+| OpenBracket
+| | Expression {
+| | | OpenBracket
+| | | | Expression {
+| | | | | Variable("a")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("b")
+| | | | }
+| | | |
+| | | CloseBracket
+| | }
+| | 
+| | Expression {
+| | | Other(Comma)
+| | }
+| | 
+| | Expression {
+| | | OpenBracket
+| | | | Expression {
+| | | | | Variable("c")
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Other(Comma)
+| | | | }
+| | | | 
+| | | | Expression {
+| | | | | Variable("d")
+| | | | }
+| | | |
+| | | CloseBracket
+| | }
+| |
+| CloseBracket
+}
+
+

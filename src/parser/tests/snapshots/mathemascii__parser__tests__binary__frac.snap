@@ -1,0 +1,31 @@
+---
+source: src/parser/tests/binary.rs
+expression: "Snapshot((input, math))"
+---
+frac 1.44 2 frac(x)(3.14)
+
+Expression {
+| Fraction(
+| | Number("1.44"),
+| | Number("2")
+| )
+}
+
+Expression {
+| Fraction(
+| | OpenParen
+| | | Expression {
+| | | | Variable("x")
+| | | }
+| | |
+| | CloseParen,
+| | OpenParen
+| | | Expression {
+| | | | Number("3.14")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+

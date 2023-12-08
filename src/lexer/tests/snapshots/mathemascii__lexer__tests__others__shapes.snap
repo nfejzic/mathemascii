@@ -1,0 +1,25 @@
+---
+source: src/lexer/tests/others.rs
+expression: "Snapshot((input, tokens))"
+---
+square diamond triangle /_\ frown /_
+
+square
+^^^^^^ -> Other(Square) at: 0 -> 6
+
+       diamond
+       ^^^^^^^ -> Other(Diamond) at: 7 -> 14
+
+               triangle
+               ^^^^^^^^ -> Other(Triangle) at: 15 -> 23
+
+                        /_\
+                        ^^^ -> Other(Triangle) at: 24 -> 27
+
+                            frown
+                            ^^^^^ -> Other(Frown) at: 28 -> 33
+
+                                  /_
+                                  ^^ -> Other(Angle) at: 34 -> 36
+
+

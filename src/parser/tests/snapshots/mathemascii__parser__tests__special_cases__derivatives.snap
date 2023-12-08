@@ -1,0 +1,45 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+f'(x) = dy/dx
+
+Expression {
+| Function(F)
+}
+
+Expression {
+| Other(Prime)
+}
+
+Expression {
+| OpenParen
+| | Expression {
+| | | Variable("x")
+| | }
+| |
+| CloseParen
+}
+
+Expression {
+| Relation(Eq)
+}
+
+Expression {
+| Fraction(
+| | OpenParen
+| | | Expression {
+| | | | Variable("dy")
+| | | }
+| | |
+| | CloseParen,
+| | OpenParen
+| | | Expression {
+| | | | Variable("dx")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+

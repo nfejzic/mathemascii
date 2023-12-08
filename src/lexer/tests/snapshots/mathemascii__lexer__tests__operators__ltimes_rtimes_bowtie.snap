@@ -1,0 +1,16 @@
+---
+source: src/lexer/tests/operators.rs
+expression: "Snapshot((input, tokens))"
+---
+|>< |><| ><|
+
+|><
+^^^ -> Operator(LTimes) at: 0 -> 3
+
+    |><|
+    ^^^^ -> Operator(Bowtie) at: 4 -> 8
+
+         ><|
+         ^^^ -> Operator(RTimes) at: 9 -> 12
+
+

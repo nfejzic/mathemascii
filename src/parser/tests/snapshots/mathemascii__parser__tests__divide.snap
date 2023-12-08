@@ -1,0 +1,24 @@
+---
+source: src/parser/tests/mod.rs
+expression: "Snapshot((input, math))"
+---
+a/b
+
+Expression {
+| Fraction(
+| | OpenParen
+| | | Expression {
+| | | | Variable("a")
+| | | }
+| | |
+| | CloseParen,
+| | OpenParen
+| | | Expression {
+| | | | Variable("b")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+

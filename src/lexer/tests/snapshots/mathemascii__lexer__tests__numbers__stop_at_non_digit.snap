@@ -1,0 +1,13 @@
+---
+source: src/lexer/tests/numbers.rs
+expression: "Snapshot((*input, tokens))"
+---
+24.42a
+
+24.42
+^^^^^ -> Number at: 0 -> 5
+
+     a
+     ^ -> Variable at: 5 -> 6
+
+

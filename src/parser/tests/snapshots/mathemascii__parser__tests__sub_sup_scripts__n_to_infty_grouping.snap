@@ -1,0 +1,24 @@
+---
+source: src/parser/tests/sub_sup_scripts.rs
+expression: "Snapshot((input, math))"
+---
+(n->oo)
+
+Expression {
+| OpenParen
+| | Expression {
+| | | Variable("n")
+| | }
+| | 
+| | Expression {
+| | | Arrow(To)
+| | }
+| | 
+| | Expression {
+| | | Other(Infinity)
+| | }
+| |
+| CloseParen
+}
+
+

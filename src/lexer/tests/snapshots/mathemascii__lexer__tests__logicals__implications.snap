@@ -1,0 +1,19 @@
+---
+source: src/lexer/tests/logicals.rs
+expression: "Snapshot((input, tokens))"
+---
+implies <=> => iff
+
+implies
+^^^^^^^ -> Logical(Implies) at: 0 -> 7
+
+        <=>
+        ^^^ -> Logical(IfAndOnlyIf) at: 8 -> 11
+
+            =>
+            ^^ -> Logical(Implies) at: 12 -> 14
+
+               iff
+               ^^^ -> Logical(IfAndOnlyIf) at: 15 -> 18
+
+

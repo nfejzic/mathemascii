@@ -1,0 +1,85 @@
+---
+source: src/lexer/tests/functions.rs
+expression: "Snapshot((*input, tokens))"
+---
+abcdefghijklmnopqrstuvwxyf
+
+a
+^ -> Variable at: 0 -> 1
+
+ b
+ ^ -> Variable at: 1 -> 2
+
+  c
+  ^ -> Variable at: 2 -> 3
+
+   d
+   ^ -> Variable at: 3 -> 4
+
+    e
+    ^ -> Variable at: 4 -> 5
+
+     f
+     ^ -> Function(F) at: 5 -> 6
+
+      g
+      ^ -> Function(G) at: 6 -> 7
+
+       h
+       ^ -> Variable at: 7 -> 8
+
+        i
+        ^ -> Variable at: 8 -> 9
+
+         j
+         ^ -> Variable at: 9 -> 10
+
+          k
+          ^ -> Variable at: 10 -> 11
+
+           l
+           ^ -> Variable at: 11 -> 12
+
+            m
+            ^ -> Variable at: 12 -> 13
+
+             n
+             ^ -> Variable at: 13 -> 14
+
+              o
+              ^ -> Variable at: 14 -> 15
+
+               p
+               ^ -> Variable at: 15 -> 16
+
+                q
+                ^ -> Variable at: 16 -> 17
+
+                 r
+                 ^ -> Variable at: 17 -> 18
+
+                  s
+                  ^ -> Variable at: 18 -> 19
+
+                   t
+                   ^ -> Variable at: 19 -> 20
+
+                    u
+                    ^ -> Variable at: 20 -> 21
+
+                     v
+                     ^ -> Variable at: 21 -> 22
+
+                      w
+                      ^ -> Variable at: 22 -> 23
+
+                       x
+                       ^ -> Variable at: 23 -> 24
+
+                        y
+                        ^ -> Variable at: 24 -> 25
+
+                         f
+                         ^ -> Function(F) at: 25 -> 26
+
+

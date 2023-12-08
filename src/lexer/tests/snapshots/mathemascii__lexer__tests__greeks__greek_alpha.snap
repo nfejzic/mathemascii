@@ -1,0 +1,10 @@
+---
+source: src/lexer/tests/greeks.rs
+expression: "Snapshot((input, tokens))"
+---
+alpha
+
+alpha
+^^^^^ -> Greek(Alpha) at: 0 -> 5
+
+

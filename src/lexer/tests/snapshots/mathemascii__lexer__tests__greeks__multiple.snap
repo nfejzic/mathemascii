@@ -1,0 +1,19 @@
+---
+source: src/lexer/tests/greeks.rs
+expression: "Snapshot((input, tokens))"
+---
+alphabetagammadelta
+
+alpha
+^^^^^ -> Greek(Alpha) at: 0 -> 5
+
+     beta
+     ^^^^ -> Greek(Beta) at: 5 -> 9
+
+         gamma
+         ^^^^^ -> Greek(Gamma) at: 9 -> 14
+
+              delta
+              ^^^^^ -> Greek(Delta) at: 14 -> 19
+
+
