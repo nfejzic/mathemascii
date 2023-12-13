@@ -212,7 +212,7 @@ impl<'src> TokenIterator<'src> {
     }
 
     fn lex_text_content(&self, cursor: usize) -> Option<(&'src str, usize)> {
-        let next_sym = dbg!(self.src.get(cursor))?;
+        let next_sym = self.src.get(cursor)?;
 
         let closing_str = match next_sym.content {
             "(" => ")",
