@@ -1,0 +1,64 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+lim_(N->oo) sum_(i=0)^N
+
+<math>
+  <munder>
+    <mi>
+      lim
+    </mi>
+    <mrow>
+      <mphantom>
+        <mo>
+          }
+        </mo>
+      </mphantom>
+      <mi>
+        N
+      </mi>
+      <mo>
+        →
+      </mo>
+      <mi>
+        ∞
+      </mi>
+      <mphantom>
+        <mo>
+          {
+        </mo>
+      </mphantom>
+    </mrow>
+  </munder>
+  <munderover>
+    <mo>
+      ∑
+    </mo>
+    <mrow>
+      <mphantom>
+        <mo>
+          }
+        </mo>
+      </mphantom>
+      <mi>
+        i
+      </mi>
+      <mo>
+        =
+      </mo>
+      <mn>
+        0
+      </mn>
+      <mphantom>
+        <mo>
+          {
+        </mo>
+      </mphantom>
+    </mrow>
+    <mi>
+      N
+    </mi>
+  </munderover>
+</math>
+

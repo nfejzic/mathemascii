@@ -1,0 +1,35 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+f'(x) = dy/dx
+
+<math>
+  <mi>
+    f
+  </mi>
+  <mo>
+    '
+  </mo>
+  <mo>
+    (
+  </mo>
+  <mi>
+    x
+  </mi>
+  <mo>
+    )
+  </mo>
+  <mo>
+    =
+  </mo>
+  <mfrac>
+    <mi>
+      dy
+    </mi>
+    <mi>
+      dx
+    </mi>
+  </mfrac>
+</math>
+

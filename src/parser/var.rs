@@ -1,3 +1,5 @@
+use alemat::elements::IntoElements;
+
 use crate::lexer::{
     keywords::{
         arrows::Arrow, functions::Function, greeks::Greek, logicals::Logical, operators::Operator,
@@ -50,7 +52,7 @@ impl TryFrom<Token<'_>> for VarKind {
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Var {
     pub kind: VarKind,
-    span: Span,
+    pub span: Span,
 }
 
 impl Var {
@@ -69,5 +71,33 @@ impl Var {
 
     pub fn span(&self) -> Span {
         self.span
+    }
+
+    pub(crate) fn is_comma(&self) -> bool {
+        match self.kind {
+            VarKind::Other(other) => matches!(other, Other::Comma),
+            _ => false,
+        }
+    }
+}
+
+impl IntoElements for Var {
+    fn into_elements(self) -> alemat::Elements {
+        use alemat::elements::*;
+
+        match self.kind {
+            VarKind::Function(i) => Ident::builder().ident(i.as_ref()).build().into_elements(),
+            VarKind::Greek(greek) => Ident::from(greek).into_elements(),
+            VarKind::Variable(i) => Ident::builder().ident(i).build().into_elements(),
+
+            VarKind::Relation(rel) => Operator::from(rel).into_elements(),
+            VarKind::Logical(log) => Operator::from(log).into_elements(),
+            VarKind::Operator(op) => Operator::from(op).into_elements(),
+            VarKind::Arrow(arrow) => Operator::from(arrow).into_elements(),
+
+            VarKind::Other(ot) => [ot].into_elements(),
+            VarKind::Text(txt) => Text::from(txt).into_elements(),
+            VarKind::Number(num) => Num::from(num.as_str()).into_elements(),
+        }
     }
 }

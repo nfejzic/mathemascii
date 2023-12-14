@@ -1,3 +1,11 @@
+use alemat::{
+    attributes::MathVariant,
+    elements::{
+        grouping::Style, radicals::Radical, scripted::UnderOver, IntoElements, Num, Operator,
+    },
+    Attribute, Elements,
+};
+
 use crate::lexer::{
     keywords::{accents::Accent, font_commands::FontCommand, groupings::Grouping, others::Other},
     Span, TokenKind,
@@ -134,36 +142,132 @@ impl Unary {
         self.span
     }
 
-    pub(crate) fn _parse(parser: &mut AsciiMath) -> Option<Self> {
-        let token = parser.iter.next()?;
+    pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
+        let token = parser.iter.peek()?;
+        let unary_kind = UnaryKind::try_from(token.kind()).ok()?;
 
-        let kind = UnaryKind::try_from(token.kind()).ok()?;
+        let start = token.span().start;
 
-        let _expr = match kind {
-            UnaryKind::Hat
-            | UnaryKind::Overline
-            | UnaryKind::Underline
-            | UnaryKind::Vector
-            | UnaryKind::Tilde
-            | UnaryKind::Dot
-            | UnaryKind::DoubleDot
-            | UnaryKind::Underbrace
-            | UnaryKind::Overbrace
-            | UnaryKind::Cancel
-            | UnaryKind::SquareRoot
-            | UnaryKind::Absolute
-            | UnaryKind::Floor
-            | UnaryKind::Ceiling
-            | UnaryKind::Norm => parser.parse_simple_expr()?,
+        parser.iter.next(); // skip unary token
 
-            UnaryKind::Bold => todo!(),
-            UnaryKind::BlackboardBold => todo!(),
-            UnaryKind::Calligraphic => todo!(),
-            UnaryKind::Typewriter => todo!(),
-            UnaryKind::Gothic => todo!(),
-            UnaryKind::SansSerif => todo!(),
+        let expr = Box::new(parser.parse_simple_expr()?);
+
+        let end = expr.span().end;
+
+        Some(Unary {
+            kind: unary_kind,
+            expr,
+            span: Span { start, end },
+        })
+    }
+}
+
+impl IntoElements for Unary {
+    fn into_elements(self) -> Elements {
+        use alemat::children;
+
+        let mut inner = match *self.expr {
+            SimpleExpr::Grouping(grp) => grp.into_elements(),
+            _ => self.expr.into_elements(),
         };
 
-        todo!()
+        match self.kind {
+            UnaryKind::Hat => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::hat())
+                .build()]
+            .into_elements(),
+            UnaryKind::Overline => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::bar())
+                .build()]
+            .into_elements(),
+            UnaryKind::Underline => children![UnderOver::builder()
+                .expr(inner)
+                .under(Operator::from("_"))
+                .build()]
+            .into_elements(),
+            UnaryKind::Vector => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::rarrow())
+                .build()]
+            .into_elements(),
+            UnaryKind::Tilde => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::from("~"))
+                .build()]
+            .into_elements(),
+            UnaryKind::Dot => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::dot())
+                .build()]
+            .into_elements(),
+            UnaryKind::DoubleDot => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::from(".."))
+                .build()]
+            .into_elements(),
+            UnaryKind::Underbrace => children![UnderOver::builder()
+                .expr(inner)
+                .under(Operator::ubrace())
+                .build()]
+            .into_elements(),
+            UnaryKind::Overbrace => children![UnderOver::builder()
+                .expr(inner)
+                .over(Operator::obrace())
+                .build()]
+            .into_elements(),
+            UnaryKind::Cancel => {
+                unimplemented!("<menclose> tag is non-standard and not recommended.")
+            }
+            UnaryKind::SquareRoot => children![Radical::builder()
+                .content(inner)
+                .index(Num::from(2))
+                .build()]
+            .into_elements(),
+            UnaryKind::Absolute => {
+                let mut el = Operator::vert_bar().into_elements();
+                el.append(&mut inner);
+                el.push(Operator::vert_bar().into());
+                el
+            }
+            UnaryKind::Floor => {
+                let mut el = Operator::lfloor().into_elements();
+                el.append(&mut inner);
+                el.push(Operator::rfloor().into());
+                el
+            }
+            UnaryKind::Ceiling => {
+                let mut el = Operator::lceiling().into_elements();
+                el.append(&mut inner);
+                el.push(Operator::rceiling().into());
+                el
+            }
+            UnaryKind::Norm => {
+                let mut el = Operator::from("||").into_elements();
+                el.append(&mut inner);
+                el.push(Operator::from("||").into());
+                el
+            }
+            UnaryKind::Bold => Style::from(inner)
+                .with_attr([Attribute::MathVariant(MathVariant::Bold)])
+                .into_elements(),
+            UnaryKind::BlackboardBold => Style::from(inner)
+                .with_attr([Attribute::MathVariant(MathVariant::DoubleStruck)])
+                .into_elements(),
+            UnaryKind::Calligraphic => Style::from(inner)
+                .with_attr([Attribute::MathVariant(MathVariant::Script)])
+                .into_elements(),
+            UnaryKind::Typewriter => Style::from(inner)
+                // NOTE: not sure if monospace is the one AsciiMath uses here
+                .with_attr([Attribute::MathVariant(MathVariant::Monospace)])
+                .into_elements(),
+            UnaryKind::Gothic => Style::from(inner)
+                .with_attr([Attribute::MathVariant(MathVariant::Fraktur)])
+                .into_elements(),
+            UnaryKind::SansSerif => Style::from(inner)
+                .with_attr([Attribute::MathVariant(MathVariant::SansSerif)])
+                .into_elements(),
+        }
     }
 }

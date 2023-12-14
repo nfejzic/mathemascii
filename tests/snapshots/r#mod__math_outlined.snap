@@ -1,0 +1,14 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+bbb "AaBbCc"
+
+<math>
+  <mstyle mathvariant="double-struck">
+    <mtext>
+      AaBbCc
+    </mtext>
+  </mstyle>
+</math>
+

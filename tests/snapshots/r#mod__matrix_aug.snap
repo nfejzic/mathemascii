@@ -1,0 +1,53 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+[[a,b,|,c],[d,e,|,f]]
+
+<math>
+  <mrow>
+    <mo>
+      [
+    </mo>
+    <mtable columnlines="none solid none ">
+      <mtr>
+        <mtd>
+          <mi>
+            a
+          </mi>
+        </mtd>
+        <mtd>
+          <mi>
+            b
+          </mi>
+        </mtd>
+        <mtd>
+          <mi>
+            c
+          </mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>
+            d
+          </mi>
+        </mtd>
+        <mtd>
+          <mi>
+            e
+          </mi>
+        </mtd>
+        <mtd>
+          <mi>
+            f
+          </mi>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>
+      ]
+    </mo>
+  </mrow>
+</math>
+

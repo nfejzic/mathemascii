@@ -1,3 +1,5 @@
+use alemat::elements::Operator;
+
 use crate::lexer::token::TokenKind;
 
 use super::macros::generate_impl;
@@ -7,8 +9,7 @@ generate_impl!(
     Arrows,
     "uarr" | "uparrow" => Up,
     "darr" | "downarrow" => Down,
-    "rarr" | "rightarrow" => Right,
-    "->" | "to" => To,
+    "->" | "to" | "rarr" | "rightarrow" => Right,
     ">->" | "rightarrowtail" => RightTail,
     "->>" | "twoheadrightarrow" => TwoHeadRight,
     ">->>" | "twoheadrightarrowtail" => TwoHeadRightTail,
@@ -21,11 +22,30 @@ generate_impl!(
     prefixes:
         RightTail => ">->>",
         TwoHeadRight => "twoheadrightarrowtail",
-        To => "->>"
+        Right => "->>"
 );
 
 impl From<Arrow> for TokenKind {
     fn from(value: Arrow) -> Self {
         TokenKind::Arrow(value)
+    }
+}
+
+impl From<Arrow> for Operator {
+    fn from(value: Arrow) -> Self {
+        match value {
+            Arrow::Up => Operator::from("↑"),
+            Arrow::Down => Operator::from("↓"),
+            Arrow::Right => Operator::rarrow(),
+            Arrow::RightTail => Operator::from("↣"),
+            Arrow::TwoHeadRight => Operator::from("↠"),
+            Arrow::TwoHeadRightTail => Operator::from("⤖"),
+            Arrow::MapsTo => Operator::from("↦"),
+            Arrow::Left => Operator::larrow(),
+            Arrow::LeftRight => Operator::from("↔"),
+            Arrow::BigRight => Operator::from("⇒"),
+            Arrow::BigLeft => Operator::from("⇐"),
+            Arrow::BigLeftRight => Operator::from("⇔"),
+        }
     }
 }

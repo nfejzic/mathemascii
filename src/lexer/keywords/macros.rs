@@ -23,6 +23,16 @@ macro_rules! generate_impl {
         )*
         }
 
+        impl AsRef<str> for $kind {
+            fn as_ref(&self) -> &str {
+                match self {
+                    $(
+                        $kind::$var => ($($lit),*,).0,
+                    )*
+                }
+            }
+        }
+
         impl TryFrom<&str> for $kind {
             type Error = ();
 
