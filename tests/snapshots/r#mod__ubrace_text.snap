@@ -1,0 +1,54 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+ubrace(1+2+3+4)_("4 terms")
+
+<math>
+  <munder>
+    <munder>
+      <mrow>
+        <mn>
+          1
+        </mn>
+        <mo>
+          +
+        </mo>
+        <mn>
+          2
+        </mn>
+        <mo>
+          +
+        </mo>
+        <mn>
+          3
+        </mn>
+        <mo>
+          +
+        </mo>
+        <mn>
+          4
+        </mn>
+      </mrow>
+      <mo>
+        ⏟
+      </mo>
+    </munder>
+    <mrow>
+      <mphantom>
+        <mo>
+          }
+        </mo>
+      </mphantom>
+      <mtext>
+        4 terms
+      </mtext>
+      <mphantom>
+        <mo>
+          {
+        </mo>
+      </mphantom>
+    </mrow>
+  </munder>
+</math>
+

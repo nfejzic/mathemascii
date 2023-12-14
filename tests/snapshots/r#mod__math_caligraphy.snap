@@ -1,0 +1,14 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+cc "AaBbCc"
+
+<math>
+  <mstyle mathvariant="script">
+    <mtext>
+      AaBbCc
+    </mtext>
+  </mstyle>
+</math>
+

@@ -1,0 +1,14 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+color(red)(x)
+
+<math>
+  <mstyle mathcolor="red">
+    <mi>
+      x
+    </mi>
+  </mstyle>
+</math>
+

@@ -1,0 +1,33 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+((a),(b))
+
+<math>
+  <mrow>
+    <mo>
+      (
+    </mo>
+    <mtable columnlines="none ">
+      <mtr>
+        <mtd>
+          <mi>
+            a
+          </mi>
+        </mtd>
+      </mtr>
+      <mtr>
+        <mtd>
+          <mi>
+            b
+          </mi>
+        </mtd>
+      </mtr>
+    </mtable>
+    <mo>
+      )
+    </mo>
+  </mrow>
+</math>
+

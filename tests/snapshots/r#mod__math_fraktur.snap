@@ -1,0 +1,14 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+fr "AaBbCc"
+
+<math>
+  <mstyle mathvariant="fraktur">
+    <mtext>
+      AaBbCc
+    </mtext>
+  </mstyle>
+</math>
+

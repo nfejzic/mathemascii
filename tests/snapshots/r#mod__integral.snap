@@ -1,0 +1,35 @@
+---
+source: tests/mod.rs
+expression: snap
+---
+int_0^1 f(x)dx
+
+<math>
+  <msubsup>
+    <mo>
+      ∫
+    </mo>
+    <mn>
+      0
+    </mn>
+    <mn>
+      1
+    </mn>
+  </msubsup>
+  <mi>
+    f
+  </mi>
+  <mo>
+    (
+  </mo>
+  <mi>
+    x
+  </mi>
+  <mo>
+    )
+  </mo>
+  <mi>
+    dx
+  </mi>
+</math>
+

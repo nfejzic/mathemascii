@@ -15,6 +15,7 @@ alemat = "0.6.1"
 [dev-dependencies]
 insta = "1.34.0"
 divan = "0.1.2"
+xmlem = "0.2.3"
 
 [[bench]]
 name = "mod"
