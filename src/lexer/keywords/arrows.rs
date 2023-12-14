@@ -7,8 +7,7 @@ generate_impl!(
     Arrows,
     "uarr" | "uparrow" => Up,
     "darr" | "downarrow" => Down,
-    "rarr" | "rightarrow" => Right,
-    "->" | "to" => To,
+    "->" | "to" | "rarr" | "rightarrow" => Right,
     ">->" | "rightarrowtail" => RightTail,
     "->>" | "twoheadrightarrow" => TwoHeadRight,
     ">->>" | "twoheadrightarrowtail" => TwoHeadRightTail,
@@ -21,7 +20,7 @@ generate_impl!(
     prefixes:
         RightTail => ">->>",
         TwoHeadRight => "twoheadrightarrowtail",
-        To => "->>"
+        Right => "->>"
 );
 
 impl From<Arrow> for TokenKind {
