@@ -1,6 +1,14 @@
-use crate::lexer::{
-    keywords::{accents::Accent, others::Other},
-    Span, TokenKind,
+use alemat::{
+    elements::{grouping::Style, radicals::Radical, scripted::UnderOver, Frac, IntoElements},
+    Attribute, Elements,
+};
+
+use crate::{
+    lexer::{
+        keywords::{accents::Accent, others::Other},
+        Span, TokenKind,
+    },
+    AsciiMath, Var, VarKind,
 };
 
 use super::expr::SimpleExpr;
@@ -71,5 +79,83 @@ pub struct Binary {
 impl Binary {
     pub fn span(&self) -> Span {
         self.span
+    }
+
+    pub fn parse(parser: &mut AsciiMath) -> Option<Self> {
+        let token = parser.iter.peek()?;
+        let binary_kind = BinaryKind::try_from(token.kind()).ok()?;
+
+        let start = token.span().start;
+
+        parser.iter.next(); // skip binary token
+
+        let expr_1 = match binary_kind {
+            BinaryKind::Color => Box::new(parser.parse_grouping_as_str()?),
+            _ => Box::new(parser.parse_simple_expr()?),
+        };
+
+        let expr_2 = Box::new(parser.parse_simple_expr()?);
+
+        let end = expr_2.span().end;
+
+        let binary = Binary {
+            kind: binary_kind,
+            expr_1,
+            expr_2,
+            span: Span { start, end },
+        };
+
+        Some(binary)
+    }
+}
+
+impl IntoElements for Binary {
+    fn into_elements(self) -> Elements {
+        let to_elements = |expr: Box<SimpleExpr>| match *expr {
+            SimpleExpr::Grouping(grp) => grp.into_elements(),
+            _ => expr.into_elements(),
+        };
+
+        match self.kind {
+            BinaryKind::Fraction => Frac::builder()
+                .num(to_elements(self.expr_1))
+                .denom(to_elements(self.expr_2))
+                .build()
+                .into_elements(),
+            BinaryKind::Root => Radical::builder()
+                .index(to_elements(self.expr_1))
+                .content(to_elements(self.expr_2))
+                .build()
+                .into_elements(),
+            BinaryKind::Overset => UnderOver::builder()
+                .expr(to_elements(self.expr_2))
+                .over(to_elements(self.expr_1))
+                .build()
+                .into_elements(),
+            BinaryKind::Underset => UnderOver::builder()
+                .expr(to_elements(self.expr_2))
+                .under(to_elements(self.expr_1))
+                .build()
+                .into_elements(),
+            BinaryKind::Color => {
+                let SimpleExpr::Var(var) = *self.expr_1 else {
+                    panic!("Expected var with color information");
+                };
+
+                let Var {
+                    kind: VarKind::Text(color),
+                    ..
+                } = var
+                else {
+                    panic!("Expected var with color information");
+                };
+
+                let expr = to_elements(self.expr_2);
+
+                Style::from(expr)
+                    .with_attr([Attribute::MathColor(color)])
+                    .into_elements()
+            }
+        }
     }
 }

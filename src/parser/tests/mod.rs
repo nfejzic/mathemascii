@@ -107,22 +107,17 @@ impl std::fmt::Display for Snapshot<&SimpleExpr> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self.0 {
             SimpleExpr::Var(var) => f.write_fmt(format_args!("{}", Snapshot(var))),
-            SimpleExpr::Grouping {
-                left_grouping,
-                right_grouping,
-                expr,
-                span: _,
-            } => {
-                f.write_fmt(format_args!("{:?}\n", left_grouping))?;
+            SimpleExpr::Grouping(grp) => {
+                f.write_fmt(format_args!("{:?}\n", grp.left_grouping))?;
 
-                let expr = format!("{}", Snapshot(expr))
+                let expr = format!("{}", Snapshot(&grp.expr))
                     .lines()
                     .map(|l| format!("{}{l}", indent(1)))
                     .collect::<Vec<_>>()
                     .join("\n");
 
                 f.write_str(expr.trim_end())?;
-                f.write_fmt(format_args!("\n{:?}\n", right_grouping))
+                f.write_fmt(format_args!("\n{:?}\n", grp.right_grouping))
             }
             SimpleExpr::Unary(unary) => f.write_fmt(format_args!("{}", Snapshot(unary))),
             SimpleExpr::Binary(binary) => f.write_fmt(format_args!("{}", Snapshot(binary))),

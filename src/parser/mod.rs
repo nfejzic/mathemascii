@@ -4,8 +4,17 @@ use std::iter::Peekable;
 
 mod binary;
 mod expr;
+mod grouping;
+mod iter_ext;
 mod unary;
 mod var;
+
+use alemat::MathMl;
+pub use binary::*;
+pub use expr::*;
+pub use grouping::*;
+pub use unary::*;
+pub use var::*;
 
 use crate::{
     lexer::{
@@ -13,13 +22,6 @@ use crate::{
         Span, TokenIterator, TokenKind,
     },
     scanner::Symbols,
-};
-
-use self::{
-    binary::{Binary, BinaryKind},
-    expr::{Expression, SimpleExpr},
-    unary::{Unary, UnaryKind},
-    var::Var,
 };
 
 #[derive(Debug, Clone)]
@@ -37,12 +39,39 @@ impl<'s> AsciiMath<'s> {
         }
     }
 
+    fn parse_grouping_as_str(&mut self) -> Option<SimpleExpr> {
+        let mut content = String::default();
+        let token = self.iter.next()?;
+        let start = token.span().start;
+        let end;
+
+        let TokenKind::Grouping(opening) = token.kind() else {
+            return None;
+        };
+
+        loop {
+            let token = self.iter.next()?;
+
+            if let TokenKind::Grouping(closing) = token.kind() {
+                if opening.matches(closing) {
+                    end = token.span().end;
+                    break;
+                }
+            } else {
+                content.push_str(token.as_str());
+            }
+        }
+
+        let var = Var {
+            kind: VarKind::Text(content),
+            span: Span { start, end },
+        };
+
+        Some(SimpleExpr::Var(var))
+    }
+
     fn parse_simple_expr(&mut self) -> Option<SimpleExpr> {
         let token = self.iter.peek()?;
-
-        if token.is_var() {
-            return Some(SimpleExpr::Var(Var::parse(self)?));
-        }
 
         if let (TokenKind::Grouping(grouping), Err(_)) =
             (token.kind(), UnaryKind::try_from(token.kind()))
@@ -67,50 +96,24 @@ impl<'s> AsciiMath<'s> {
                 }
             };
 
-            return Some(SimpleExpr::Grouping {
+            return Some(SimpleExpr::Grouping(GroupingExpr {
                 left_grouping: grouping,
                 right_grouping: r_grouping,
                 expr: exprs,
                 span: Span { start, end },
-            });
+            }));
         }
 
-        if let Ok(unary_kind) = UnaryKind::try_from(token.kind()) {
-            let start = token.span().start;
-
-            self.iter.next(); // skip unary token
-
-            let expr = Box::new(self.parse_simple_expr()?);
-
-            let end = expr.span().end;
-
-            let unary = Unary {
-                kind: unary_kind,
-                expr,
-                span: Span { start, end },
-            };
-
-            return Some(SimpleExpr::Unary(unary));
+        if UnaryKind::try_from(token.kind()).is_ok() {
+            return Unary::parse(self).map(SimpleExpr::Unary);
         }
 
-        if let Ok(binary_kind) = BinaryKind::try_from(token.kind()) {
-            let start = token.span().start;
+        if BinaryKind::try_from(token.kind()).is_ok() {
+            return Binary::parse(self).map(SimpleExpr::Binary);
+        }
 
-            self.iter.next(); // skip binary token
-
-            let expr_1 = Box::new(self.parse_simple_expr()?);
-            let expr_2 = Box::new(self.parse_simple_expr()?);
-
-            let end = expr_2.span().end;
-
-            let binary = Binary {
-                kind: binary_kind,
-                expr_1,
-                expr_2,
-                span: Span { start, end },
-            };
-
-            return Some(SimpleExpr::Binary(binary));
+        if token.is_var() {
+            return Var::parse(self).map(SimpleExpr::Var);
         }
 
         None
@@ -161,19 +164,19 @@ impl<'s> AsciiMath<'s> {
 
                 // treat intermediate expressions as parenthesised expressions passed to frac:
                 // a_b/c_d == (a_b)/(c_d) == frac{a_b}{c_d}
-                let numerator = SimpleExpr::Grouping {
+                let numerator = SimpleExpr::Grouping(GroupingExpr {
                     left_grouping: Grouping::OpenParen,
                     right_grouping: Grouping::CloseParen,
                     expr: vec![numerator],
                     span: numer_span,
-                };
+                });
 
-                let denominator = SimpleExpr::Grouping {
+                let denominator = SimpleExpr::Grouping(GroupingExpr {
                     left_grouping: Grouping::OpenParen,
                     right_grouping: Grouping::CloseParen,
                     expr: vec![denominator],
                     span: numerator.span(),
-                };
+                });
 
                 let binary = Binary {
                     kind: BinaryKind::Fraction,
@@ -199,6 +202,18 @@ impl Iterator for AsciiMath<'_> {
 
     fn next(&mut self) -> Option<Self::Item> {
         self.parse_expr()
+    }
+}
+
+impl From<AsciiMath<'_>> for MathMl {
+    fn from(value: AsciiMath<'_>) -> Self {
+        let mut mathml = MathMl::default();
+
+        for expr in value {
+            mathml.append_content(expr);
+        }
+
+        mathml
     }
 }
 

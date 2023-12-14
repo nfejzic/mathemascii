@@ -21,7 +21,7 @@ Expression {
 | | }
 | | 
 | | Expression {
-| | | Arrow(To)
+| | | Arrow(Right)
 | | }
 | | 
 | | Expression {

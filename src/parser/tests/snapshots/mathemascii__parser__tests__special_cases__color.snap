@@ -1,0 +1,19 @@
+---
+source: src/parser/tests/special_cases.rs
+expression: "Snapshot((input, math))"
+---
+color(red)(x)
+
+Expression {
+| Color(
+| | Text("red"),
+| | OpenParen
+| | | Expression {
+| | | | Variable("x")
+| | | }
+| | |
+| | CloseParen
+| )
+}
+
+
