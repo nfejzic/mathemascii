@@ -66,3 +66,32 @@ The default writer used is the `BufMathMlWriter` from alemat. This writer uses a
 the [`Infallible`](https://doc.rust-lang.org/core/convert/enum.Infallible.html)
 so it's always safe to unwrap the result. If you use a custom `Writer`
 implementation, you may want to handle the error case.
+
+## Examples
+
+The code shown in the usage section produces the following output: 
+
+```xml
+<math>
+<munderover>
+  <mo>∑</mo>
+  <mrow>
+    <mphantom><mo>{</mo></mphantom>
+    <mi>i</mi><mo>=</mo><mn>0</mn>
+    <mphantom><mo>}</mo></mphantom></mrow>
+  <mrow>
+    <mphantom><mo>{</mo></mphantom>
+    <mi>k</mi><mo>⋅</mo><mn>2</mn>
+    <mphantom><mo>}</mo></mphantom>
+  </mrow>
+</munderover>
+<msup>
+  <mi>a</mi>
+  <mi>k</mi>
+</msup>
+</math>
+```
+
+which produces the following rendering in browsers: 
+
+$$\sum_{n = 0}^{k * 2}{a^k}$$
