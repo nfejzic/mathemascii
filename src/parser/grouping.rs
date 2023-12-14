@@ -7,15 +7,26 @@ use crate::{
 
 use super::iter_ext::IterExt;
 
+/// AsciiMath grouping expression - any number of [`Expression`]s grouped between two grouping
+/// symbols, such as parentheses, brackets, etc.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GroupingExpr {
+    /// The opening grouping symbol.
     pub left_grouping: Grouping,
+
+    /// The opening grouping symbol.
     pub right_grouping: Grouping,
+
+    /// The expressions inside the grouping, separated by comma.
     pub expr: Vec<Expression>,
+
+    /// The span of the grouping.
     pub span: Span,
 }
 
 impl GroupingExpr {
+    /// Replaces the grouping symbols with ignored parentheses.
+    /// (See [`Grouping::OpenIgnored`] and [`Grouping::CloseIgnored`])
     pub fn ignored_parentheses(self) -> Self {
         Self {
             left_grouping: Grouping::OpenIgnored,

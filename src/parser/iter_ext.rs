@@ -2,12 +2,17 @@ use std::marker::PhantomData;
 
 use crate::Expression;
 
+/// Extension trait for iterators, useful for grouping expressions.
 pub(crate) trait IterExt<'e> {
+    /// Groups the list of expressions by commas. Meaning, commas are skipped, and all expressions
+    /// until a comma are grouped together in a vector.
     fn group_by_commas(self) -> GroupByCommas<Self::IntoIter>
     where
         Self: IntoIterator<Item = Expression> + Sized,
         Self: Sized;
 
+    /// Same as [`IterExt::group_by_commas`], but returns references to [`Expression`]s instead.
+    /// This function is useful when we don't want to consume the implementing type instance.
     fn group_by_commas_ref(self) -> GroupByCommasRef<'e, Self>
     where
         Self: Iterator<Item = &'e Expression> + Sized,

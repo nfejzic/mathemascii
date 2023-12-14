@@ -132,16 +132,23 @@ impl TryFrom<TokenKind> for UnaryKind {
 /// Unary operator in Ascii math.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Unary {
+    /// Kind of unary operator.
     pub(crate) kind: UnaryKind,
+
+    /// Expression that is being operated on.
     pub(crate) expr: Box<SimpleExpr>,
+
+    /// Span occupied by this unary operator expression.
     pub(crate) span: Span,
 }
 
 impl Unary {
+    /// Returns the [`Span`] occupied by this unary operator expression.
     pub fn span(&self) -> Span {
         self.span
     }
 
+    /// Parses a unary operator expression.
     pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
         let token = parser.iter.peek()?;
         let unary_kind = UnaryKind::try_from(token.kind()).ok()?;

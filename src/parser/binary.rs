@@ -1,28 +1,33 @@
-use alemat::{
-    elements::{grouping::Style, radicals::Radical, scripted::UnderOver, Frac, IntoElements},
-    Attribute, Elements,
-};
+use alemat::elements::grouping::Style;
+use alemat::elements::radicals::Radical;
+use alemat::elements::scripted::UnderOver;
+use alemat::elements::{Frac, IntoElements};
+use alemat::{Attribute, Elements};
 
-use crate::{
-    lexer::{
-        keywords::{accents::Accent, others::Other},
-        Span, TokenKind,
-    },
-    AsciiMath, Var, VarKind,
-};
+use crate::lexer::keywords::accents::Accent;
+use crate::lexer::keywords::others::Other;
+use crate::lexer::{Span, TokenKind};
+use crate::{AsciiMath, Var, VarKind};
 
 use super::expr::SimpleExpr;
 
 /// Kinds of unary operators in Ascii math.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum BinaryKind {
-    // others
+    /// Fraction binary operation, i.e. `frac(a)(b)` or `a/b`.
     Fraction,
+
+    /// Root binary operation, i.e. `root(a)(b)`.
     Root,
 
-    // accents
+    /// Overset binary operation, i.e. `overset(a)(b)`.
     Overset,
+
+    /// Overset binary operation, i.e. `overset(a)(b)`.
     Underset,
+
+    /// Color binary operation, colors the second expression with the color of the first grouping.
+    /// i.e. `color(red)(b)` produces red colored `b` identifier.
     Color,
 }
 
@@ -77,11 +82,12 @@ pub struct Binary {
 }
 
 impl Binary {
+    /// Returns the [`Span`] occupied by this binary operator expression.
     pub fn span(&self) -> Span {
         self.span
     }
 
-    pub fn parse(parser: &mut AsciiMath) -> Option<Self> {
+    pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
         let token = parser.iter.peek()?;
         let binary_kind = BinaryKind::try_from(token.kind()).ok()?;
 
