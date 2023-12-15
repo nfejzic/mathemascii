@@ -12,7 +12,7 @@ lim_(N->oo) sum_(i=0)^N
     <mrow>
       <mphantom>
         <mo>
-          }
+          {
         </mo>
       </mphantom>
       <mi>
@@ -26,7 +26,7 @@ lim_(N->oo) sum_(i=0)^N
       </mi>
       <mphantom>
         <mo>
-          {
+          }
         </mo>
       </mphantom>
     </mrow>
@@ -38,7 +38,7 @@ lim_(N->oo) sum_(i=0)^N
     <mrow>
       <mphantom>
         <mo>
-          }
+          {
         </mo>
       </mphantom>
       <mi>
@@ -52,7 +52,7 @@ lim_(N->oo) sum_(i=0)^N
       </mn>
       <mphantom>
         <mo>
-          {
+          }
         </mo>
       </mphantom>
     </mrow>

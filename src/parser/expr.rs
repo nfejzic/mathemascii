@@ -1,11 +1,6 @@
-use alemat::{
-    elements::{
-        grouping::{Phantom, Row},
-        scripted::{SubSup, UnderOver},
-        ColumnLine, IntoElements, Table, TableAttr, TableCell, TableRow,
-    },
-    Elements,
-};
+use alemat::elements::grouping::{Phantom, Row};
+use alemat::elements::scripted::{SubSup, UnderOver};
+use alemat::elements::{ColumnLine, Elements, IntoElements, Table, TableAttr, TableCell, TableRow};
 
 use crate::{
     lexer::{
@@ -17,18 +12,28 @@ use crate::{
 
 use super::{binary::Binary, iter_ext::IterExt, unary::Unary, var::Var};
 
+/// Simple AsciiMath expression that can be one of the following:
+///
+/// * Variable - any number, identifier, greek letter etc.
+/// * Grouping - any number of expressions surrounded by parentheses, brackets, braces etc.
+/// * Unary - unary operator applied to an expression, i.e. `sqrt(a)`.
+/// * Binary - binary operator applied to two expressions, i.e. `root(3)(a + b)`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SimpleExpr {
+    /// Variable - any number, identifier, greek letter etc.
     Var(Var),
 
+    /// Grouping - any number of expressions surrounded by parentheses, brackets, braces etc.
     Grouping(GroupingExpr),
 
+    /// Unary operator applied to an expression, i.e. `sqrt(a)`.
     Unary(Unary),
-
+    /// Binary operator applied to two expressions, i.e. `root(3)(a + b)`.
     Binary(Binary),
 }
 
 impl SimpleExpr {
+    /// Returns the [`Span`] of the expression.
     pub fn span(&self) -> Span {
         match self {
             SimpleExpr::Var(var) => var.span(),
@@ -59,10 +64,12 @@ impl SimpleExpr {
         }
     }
 
+    /// Returns `true` if the expression contains no inner expressions.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Returns the number of expressions inside grouping, or 1 otherwise.
     pub fn len(&self) -> usize {
         match self {
             SimpleExpr::Grouping(grp) => grp.len(),
@@ -71,6 +78,7 @@ impl SimpleExpr {
     }
 }
 
+/// The main AsciiMath expression.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Expression {
     pub(crate) val: SimpleExpr,
@@ -79,6 +87,7 @@ pub struct Expression {
 }
 
 impl Expression {
+    /// Returns the [`Span`] of the expression.
     pub fn span(&self) -> Span {
         let span = self.val.span();
         let start = span.start;
@@ -91,14 +100,17 @@ impl Expression {
         Span { start, end }
     }
 
+    /// Returns `true` if the expression contains no inner expressions.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
 
+    /// Returns the number of expressions inside grouping, or 1 otherwise.
     pub fn len(&self) -> usize {
         self.val.len()
     }
 
+    /// Returns `true` if the expression is a comma.
     pub(crate) fn is_comma(&self) -> bool {
         match self.val {
             SimpleExpr::Var(ref var) => var.is_comma(),
@@ -106,6 +118,7 @@ impl Expression {
         }
     }
 
+    /// Returns `true` if the expression is a matrix.
     fn is_matrix(&self) -> bool {
         let SimpleExpr::Grouping(ref grp) = self.val else {
             return false;
@@ -135,6 +148,7 @@ impl Expression {
         len != 0
     }
 
+    /// Returns `true` if the expression is a vertical bar.
     fn is_vertical_bar(&self) -> bool {
         let SimpleExpr::Var(ref var) = self.val else {
             return false;
@@ -146,6 +160,11 @@ impl Expression {
         }
     }
 
+    /// Transforms the [`Expression`] into a [`alemat::elements::Table`].
+    ///
+    /// # Panics
+    ///
+    /// If the expressions does not have the form of a matrix (or a vector).
     fn into_matrix(self) -> Elements {
         let SimpleExpr::Grouping(grp) = self.val else {
             panic!("Expected a matrix.");

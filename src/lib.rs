@@ -1,3 +1,6 @@
+#![warn(missing_docs)]
+//! Crate for parsing and rendering of [AsciiMath](http://asciimath.org/).
+
 mod lexer;
 mod parser;
 mod scanner;

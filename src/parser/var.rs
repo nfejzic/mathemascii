@@ -10,17 +10,37 @@ use crate::lexer::{
 
 use super::AsciiMath;
 
+/// Kinds of "variables" in Ascii math.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub enum VarKind {
+    /// Function identifier, i.e. `f` in `f(x)`.
     Function(Function),
+
+    /// Number, i.e. `1` in `1 + 2`.
     Number(String),
+
+    /// Greek letter, i.e. `alpha` or `pi`.
     Greek(Greek),
+
+    /// Variable identifier, almost any letter i.e. `x` in `f(x)`.
     Variable(String),
+
+    /// Arrow, i.e. `->` or `=>`.
     Arrow(Arrow),
+
+    /// Relation, i.e. `=` or `!=`.
     Relation(Relation),
+
+    /// Logical operator, i.e. `and` or `or`.
     Logical(Logical),
+
+    /// Operator, i.e. `+` or `-`.
     Operator(Operator),
+
+    /// Other symbols, like comma (`,`) for example.
     Other(Other),
+
+    /// Text, i.e. `"hello"` or `text(hello)`.
     Text(String),
 }
 
@@ -49,14 +69,19 @@ impl TryFrom<Token<'_>> for VarKind {
     }
 }
 
+/// Variable in Ascii math, meaning a symbol that stands on it's own.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Var {
+    /// Kind of variable.
     pub kind: VarKind,
+
+    /// Span occupied by this variable.
     pub span: Span,
 }
 
 impl Var {
-    pub fn parse(parser: &mut AsciiMath) -> Option<Self> {
+    /// Parses a variable from Ascii math input.
+    pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
         let token = parser.iter.next()?;
 
         if let Ok(var_kind) = VarKind::try_from(token) {
@@ -69,10 +94,12 @@ impl Var {
         None
     }
 
+    /// Returns the [`Span`] occupied by this variable.
     pub fn span(&self) -> Span {
         self.span
     }
 
+    /// Returns `true` if this variable is a comma.
     pub(crate) fn is_comma(&self) -> bool {
         match self.kind {
             VarKind::Other(other) => matches!(other, Other::Comma),

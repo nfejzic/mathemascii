@@ -3,7 +3,7 @@ name = "mathemascii"
 version = "0.1.0"
 edition = "2021"
 authors = ["Nadir Fejzic <nadirfejzo@gmail.com>"]
-description = "AsciiMath parser written in Rust."
+description = "AsciiMath parsing and rendering."
 repository = "https://github.com/nfejzic/mathemascii"
 license = "Apache-2.0"
 

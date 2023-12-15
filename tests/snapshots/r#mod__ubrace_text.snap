@@ -37,7 +37,7 @@ ubrace(1+2+3+4)_("4 terms")
     <mrow>
       <mphantom>
         <mo>
-          }
+          {
         </mo>
       </mphantom>
       <mtext>
@@ -45,7 +45,7 @@ ubrace(1+2+3+4)_("4 terms")
       </mtext>
       <mphantom>
         <mo>
-          {
+          }
         </mo>
       </mphantom>
     </mrow>

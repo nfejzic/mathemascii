@@ -24,6 +24,7 @@ use crate::{
     scanner::Symbols,
 };
 
+/// Iterator that parses AsciiMath input and yields [`Expression`]s.
 #[derive(Debug, Clone)]
 pub struct AsciiMath<'src> {
     iter: Peekable<TokenIterator<'src>>,
