@@ -1,6 +1,6 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/nfejzic/mathemascii/build.yml?logo=github&label=Build)](https://github.com/nfejzic/mathemascii/actions/workflows/build.yml)
 [![CI](https://img.shields.io/github/actions/workflow/status/nfejzic/mathemascii/ci.yml?logo=github&label=CI)](https://github.com/nfejzic/mathemascii/actions/workflows/ci.yml)
-[![Documentation](https://img.shields.io/docsrs/mathemascii?logo=docs.rs&label=Docs)](https://docs.rs/mathemascii/latest/alemat/)
+[![Documentation](https://img.shields.io/docsrs/mathemascii?logo=docs.rs&label=Docs)](https://docs.rs/mathemascii/latest/mathemascii/)
 [![Crates](https://img.shields.io/crates/v/mathemascii?logo=rust)](https://crates.io/crates/mathemascii)
 
 # mathemascii - AsciiMath parser
