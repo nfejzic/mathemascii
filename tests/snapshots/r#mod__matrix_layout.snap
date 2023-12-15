@@ -77,7 +77,7 @@ expression: snap
     </mtable>
     <mphantom>
       <mo>
-        {
+        }
       </mo>
     </mphantom>
   </mrow>

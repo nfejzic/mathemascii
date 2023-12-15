@@ -37,7 +37,7 @@ obrace(1+2+3+4)^("4 terms")
     <mrow>
       <mphantom>
         <mo>
-          }
+          {
         </mo>
       </mphantom>
       <mtext>
@@ -45,7 +45,7 @@ obrace(1+2+3+4)^("4 terms")
       </mtext>
       <mphantom>
         <mo>
-          {
+          }
         </mo>
       </mphantom>
     </mrow>
