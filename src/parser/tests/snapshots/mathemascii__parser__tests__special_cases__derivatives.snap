@@ -9,7 +9,7 @@ Expression {
 }
 
 Expression {
-| Other(Prime)
+| Operator(Prime)
 }
 
 Expression {
