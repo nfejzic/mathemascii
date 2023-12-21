@@ -303,13 +303,21 @@ impl IntoElements for Expression {
         }
 
         let sub = self.subscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => SimpleExpr::Grouping(grp.ignored_parentheses()),
-            _ => s,
+            SimpleExpr::Grouping(grp) => grp
+                .ungroup()
+                .into_iter()
+                .map(IntoElements::into_elements)
+                .collect(),
+            _ => s.into_elements(),
         });
 
         let sup = self.supscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => SimpleExpr::Grouping(grp.ignored_parentheses()),
-            _ => s,
+            SimpleExpr::Grouping(grp) => grp
+                .ungroup()
+                .into_iter()
+                .map(IntoElements::into_elements)
+                .collect(),
+            _ => s.into_elements(),
         });
 
         if is_underover {

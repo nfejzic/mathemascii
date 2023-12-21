@@ -35,6 +35,11 @@ impl GroupingExpr {
         }
     }
 
+    /// Returns the group of expressions inside the grouping without the grouping symbols.
+    pub fn ungroup(self) -> Vec<Expression> {
+        self.expr
+    }
+
     /// Checks whether the grouping contains any expressions.
     pub fn is_empty(&self) -> bool {
         self.expr.is_empty()
