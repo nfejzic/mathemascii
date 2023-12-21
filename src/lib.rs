@@ -22,6 +22,11 @@ where
 
 /// Write an abstract syntax tree into the [`Writer`]. The resulting output is controlled by the
 /// implementation of passed in [`Writer`].
+///
+/// # Errors
+///
+/// The [`Writer`] may fail to write the mathml. In such case the error defined by the [`Writer`]
+/// implementation is returned.
 pub fn write_mathml<'w, W>(
     ascii_math: AsciiMath<'_>,
     writer: &'w mut W,
@@ -36,7 +41,7 @@ where
     Ok(writer)
 }
 
-/// Render the abstract syntax tree into a string of MathMl.
+/// Render the abstract syntax tree into a string of mathml.
 pub fn render_mathml(ascii_math: AsciiMath<'_>) -> String {
     let mathml = MathMl::from(ascii_math);
     mathml.render().expect("BufMathMlWriter does not fail.")
