@@ -27,18 +27,8 @@ Expression {
 
 Expression {
 | Fraction(
-| | OpenParen
-| | | Expression {
-| | | | Variable("dy")
-| | | }
-| | |
-| | CloseParen,
-| | OpenParen
-| | | Expression {
-| | | | Variable("dx")
-| | | }
-| | |
-| | CloseParen
+| | Variable("dy"),
+| | Variable("dx")
 | )
 }
 

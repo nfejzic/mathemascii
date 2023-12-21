@@ -28,8 +28,17 @@ pub enum SimpleExpr {
 
     /// Unary operator applied to an expression, i.e. `sqrt(a)`.
     Unary(Unary),
+
     /// Binary operator applied to two expressions, i.e. `root(3)(a + b)`.
     Binary(Binary),
+
+    /// Intermediate expression is simply a wrapped [`Expression`].
+    /// AsciiMath differs Expression and Intermediate expression, but in this implementation they
+    /// are the same. The top-level expression defined is AsciiMath is the [`AsciiMath`] iterator
+    /// that produces multiple [`Expression`]s.
+    ///
+    /// [`AsciiMath`]: crate::AsciiMath
+    Interm(Box<Expression>),
 }
 
 impl SimpleExpr {
@@ -40,6 +49,7 @@ impl SimpleExpr {
             SimpleExpr::Grouping(GroupingExpr { ref span, .. }) => *span,
             SimpleExpr::Unary(unary) => unary.span(),
             SimpleExpr::Binary(binary) => binary.span(),
+            SimpleExpr::Interm(inner) => inner.span(),
         }
     }
 
@@ -81,7 +91,7 @@ impl SimpleExpr {
 /// The main AsciiMath expression.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Expression {
-    pub(crate) val: SimpleExpr,
+    pub(crate) interm: SimpleExpr,
     pub(crate) subscript: Option<SimpleExpr>,
     pub(crate) supscript: Option<SimpleExpr>,
 }
@@ -89,7 +99,7 @@ pub struct Expression {
 impl Expression {
     /// Returns the [`Span`] of the expression.
     pub fn span(&self) -> Span {
-        let span = self.val.span();
+        let span = self.interm.span();
         let start = span.start;
         let mut end = span.end;
 
@@ -100,6 +110,15 @@ impl Expression {
         Span { start, end }
     }
 
+    pub(crate) fn into_interm_with(self, f: impl FnOnce(SimpleExpr) -> SimpleExpr) -> SimpleExpr {
+        f(self.interm)
+    }
+
+    /// Checks whether the expression has subscript or superscript.
+    pub fn is_scripted(&self) -> bool {
+        self.subscript.is_some() || self.supscript.is_some()
+    }
+
     /// Returns `true` if the expression contains no inner expressions.
     pub fn is_empty(&self) -> bool {
         self.len() == 0
@@ -107,12 +126,12 @@ impl Expression {
 
     /// Returns the number of expressions inside grouping, or 1 otherwise.
     pub fn len(&self) -> usize {
-        self.val.len()
+        self.interm.len()
     }
 
     /// Returns `true` if the expression is a comma.
     pub(crate) fn is_comma(&self) -> bool {
-        match self.val {
+        match self.interm {
             SimpleExpr::Var(ref var) => var.is_comma(),
             _ => false,
         }
@@ -120,7 +139,7 @@ impl Expression {
 
     /// Returns `true` if the expression is a matrix.
     fn is_matrix(&self) -> bool {
-        let SimpleExpr::Grouping(ref grp) = self.val else {
+        let SimpleExpr::Grouping(ref grp) = self.interm else {
             return false;
         };
 
@@ -131,7 +150,7 @@ impl Expression {
                 continue;
             }
 
-            let SimpleExpr::Grouping(ref grp) = e.val else {
+            let SimpleExpr::Grouping(ref grp) = e.interm else {
                 return false;
             };
 
@@ -150,7 +169,7 @@ impl Expression {
 
     /// Returns `true` if the expression is a vertical bar.
     fn is_vertical_bar(&self) -> bool {
-        let SimpleExpr::Var(ref var) = self.val else {
+        let SimpleExpr::Var(ref var) = self.interm else {
             return false;
         };
 
@@ -166,7 +185,7 @@ impl Expression {
     ///
     /// If the expressions does not have the form of a matrix (or a vector).
     fn into_matrix(self) -> Elements {
-        let SimpleExpr::Grouping(grp) = self.val else {
+        let SimpleExpr::Grouping(grp) = self.interm else {
             panic!("Expected a matrix.");
         };
 
@@ -180,7 +199,7 @@ impl Expression {
         let first_row = expr.get(0).expect("Matrix row expected.");
 
         // preallocate maximal number of columns
-        let num_of_columns = match &first_row.val {
+        let num_of_columns = match &first_row.interm {
             SimpleExpr::Grouping(grp) => grp.len(),
             _ => unreachable!(),
         };
@@ -196,7 +215,7 @@ impl Expression {
                 continue;
             }
 
-            let SimpleExpr::Grouping(grp) = row.val else {
+            let SimpleExpr::Grouping(grp) = row.interm else {
                 unreachable!("Expected a matrix row.");
             };
 
@@ -275,9 +294,9 @@ impl IntoElements for Expression {
             return self.into_matrix();
         }
 
-        let is_underover = self.val.is_underover();
+        let is_underover = self.interm.is_underover();
 
-        let inner = self.val.into_elements();
+        let inner = self.interm.into_elements();
 
         if matches!((&self.subscript, &self.supscript), (None, None)) {
             return inner.into_elements();
@@ -336,6 +355,7 @@ impl IntoElements for SimpleExpr {
             }
             SimpleExpr::Unary(unary) => unary.into_elements(),
             SimpleExpr::Binary(binary) => binary.into_elements(),
+            SimpleExpr::Interm(inner) => inner.into_elements(),
         }
     }
 }
