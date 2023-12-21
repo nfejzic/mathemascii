@@ -10,11 +10,6 @@ lim_(N->oo) sum_(i=0)^N
       lim
     </mi>
     <mrow>
-      <mphantom>
-        <mo>
-          {
-        </mo>
-      </mphantom>
       <mi>
         N
       </mi>
@@ -24,11 +19,6 @@ lim_(N->oo) sum_(i=0)^N
       <mi>
         ∞
       </mi>
-      <mphantom>
-        <mo>
-          }
-        </mo>
-      </mphantom>
     </mrow>
   </munder>
   <munderover>
@@ -36,11 +26,6 @@ lim_(N->oo) sum_(i=0)^N
       ∑
     </mo>
     <mrow>
-      <mphantom>
-        <mo>
-          {
-        </mo>
-      </mphantom>
       <mi>
         i
       </mi>
@@ -50,11 +35,6 @@ lim_(N->oo) sum_(i=0)^N
       <mn>
         0
       </mn>
-      <mphantom>
-        <mo>
-          }
-        </mo>
-      </mphantom>
     </mrow>
     <mi>
       N
