@@ -34,8 +34,8 @@ pub enum SimpleExpr {
 
     /// Intermediate expression is simply a wrapped [`Expression`].
     /// AsciiMath differs Expression and Intermediate expression, but in this implementation they
-    /// are the same. The top-level expression defined is AsciiMath is the [`AsciiMath`] iterator
-    /// that produces multiple [`Expression`]s.
+    /// are the same. The top-level expression defined in ascii math grammar is the [`AsciiMath`]
+    /// iterator that produces multiple [`Expression`]s.
     ///
     /// [`AsciiMath`]: crate::AsciiMath
     Interm(Box<Expression>),
