@@ -296,27 +296,19 @@ impl IntoElements for Expression {
 
         let is_underover = self.interm.is_underover();
 
-        let inner = self.interm.into_elements();
-
-        if matches!((&self.subscript, &self.supscript), (None, None)) {
-            return inner.into_elements();
-        }
+        let inner = if self.is_scripted() {
+            self.interm.into_elements()
+        } else {
+            return self.interm.into_elements();
+        };
 
         let sub = self.subscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp
-                .ungroup()
-                .into_iter()
-                .map(IntoElements::into_elements)
-                .collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
             _ => s.into_elements(),
         });
 
         let sup = self.supscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp
-                .ungroup()
-                .into_iter()
-                .map(IntoElements::into_elements)
-                .collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
             _ => s.into_elements(),
         });
 

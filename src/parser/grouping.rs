@@ -40,6 +40,12 @@ impl GroupingExpr {
         self.expr
     }
 
+    /// Returns an iterator over the group of expression inside the grouping without the grouping
+    /// symbols and mapped by the given function.
+    pub(crate) fn ungroup_map<T>(self, f: impl FnMut(Expression) -> T) -> impl Iterator<Item = T> {
+        self.ungroup().into_iter().map(f)
+    }
+
     /// Checks whether the grouping contains any expressions.
     pub fn is_empty(&self) -> bool {
         self.expr.is_empty()
