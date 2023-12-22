@@ -161,26 +161,26 @@ impl<'s> AsciiMath<'s> {
 
                 // treat intermediate expressions as parenthesised expressions passed to frac:
                 // a_b/c_d == (a_b)/(c_d) == frac{a_b}{c_d}
-                let numerator = if !numerator.is_scripted() {
+                let numerator = if numerator.is_scripted() {
+                    SimpleExpr::Interm(Box::new(numerator))
+                } else {
                     numerator.into_interm_with(|inner| match inner {
                         SimpleExpr::Grouping(grp) => {
                             SimpleExpr::Grouping(grp.ignored_parentheses())
                         }
                         _ => inner,
                     })
-                } else {
-                    SimpleExpr::Interm(Box::new(numerator))
                 };
 
-                let denominator = if !denominator.is_scripted() {
+                let denominator = if denominator.is_scripted() {
+                    SimpleExpr::Interm(Box::new(denominator))
+                } else {
                     denominator.into_interm_with(|inner| match inner {
                         SimpleExpr::Grouping(grp) => {
                             SimpleExpr::Grouping(grp.ignored_parentheses())
                         }
                         _ => inner,
                     })
-                } else {
-                    SimpleExpr::Interm(Box::new(denominator))
                 };
 
                 let binary = Binary {
