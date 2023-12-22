@@ -6,7 +6,6 @@ fn main() {
 
     let is_block = match args.peek() {
         Some(arg) => {
-            dbg!(arg);
             matches!(arg.as_str(), "--block" | "-b")
         }
         None => false,
