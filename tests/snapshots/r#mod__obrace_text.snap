@@ -34,21 +34,9 @@ obrace(1+2+3+4)^("4 terms")
         ⏞
       </mo>
     </mover>
-    <mrow>
-      <mphantom>
-        <mo>
-          {
-        </mo>
-      </mphantom>
-      <mtext>
-        4 terms
-      </mtext>
-      <mphantom>
-        <mo>
-          }
-        </mo>
-      </mphantom>
-    </mrow>
+    <mtext>
+      4 terms
+    </mtext>
   </mover>
 </math>
 

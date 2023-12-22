@@ -14,7 +14,6 @@ generate_impl!(
     Other,
     Others,
     "," => Comma,
-    "'" => Prime,
     "frac" => Fraction,
     "/" => ForwardSlash,
     "^" => Power,
@@ -71,7 +70,6 @@ impl From<Other> for Element {
     fn from(value: Other) -> Self {
         match value {
             Other::Comma => Operator::from(",").into(),
-            Other::Prime => Operator::from("'").into(),
             Other::ForwardSlash => Operator::from("/").into(),
             Other::Integral => Operator::integral().into(),
             Other::OIntegral => Operator::circle_integral().into(),

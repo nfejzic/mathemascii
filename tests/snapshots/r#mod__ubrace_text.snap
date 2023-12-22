@@ -34,21 +34,9 @@ ubrace(1+2+3+4)_("4 terms")
         ⏟
       </mo>
     </munder>
-    <mrow>
-      <mphantom>
-        <mo>
-          {
-        </mo>
-      </mphantom>
-      <mtext>
-        4 terms
-      </mtext>
-      <mphantom>
-        <mo>
-          }
-        </mo>
-      </mphantom>
-    </mrow>
+    <mtext>
+      4 terms
+    </mtext>
   </munder>
 </math>
 

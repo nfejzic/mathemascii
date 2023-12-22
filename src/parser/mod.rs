@@ -17,10 +17,7 @@ pub use unary::*;
 pub use var::*;
 
 use crate::{
-    lexer::{
-        keywords::{groupings::Grouping, others::Other},
-        Span, TokenIterator, TokenKind,
-    },
+    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind},
     scanner::Symbols,
 };
 
@@ -140,7 +137,7 @@ impl<'s> AsciiMath<'s> {
         };
 
         let interm = Expression {
-            val: s_expr,
+            interm: s_expr,
             subscript,
             supscript,
         };
@@ -155,7 +152,6 @@ impl<'s> AsciiMath<'s> {
             if matches!(next_token.kind(), TokenKind::Other(Other::ForwardSlash)) {
                 // I/I case -> fraction
                 let numerator = interm;
-                let numer_span = numerator.span();
 
                 self.iter.next(); // skip '/' token
                 let denominator = self.parse_expr()?;
@@ -165,19 +161,27 @@ impl<'s> AsciiMath<'s> {
 
                 // treat intermediate expressions as parenthesised expressions passed to frac:
                 // a_b/c_d == (a_b)/(c_d) == frac{a_b}{c_d}
-                let numerator = SimpleExpr::Grouping(GroupingExpr {
-                    left_grouping: Grouping::OpenParen,
-                    right_grouping: Grouping::CloseParen,
-                    expr: vec![numerator],
-                    span: numer_span,
-                });
+                let numerator = if numerator.is_scripted() {
+                    SimpleExpr::Interm(Box::new(numerator))
+                } else {
+                    numerator.into_interm_with(|inner| match inner {
+                        SimpleExpr::Grouping(grp) => {
+                            SimpleExpr::Grouping(grp.ignored_parentheses())
+                        }
+                        _ => inner,
+                    })
+                };
 
-                let denominator = SimpleExpr::Grouping(GroupingExpr {
-                    left_grouping: Grouping::OpenParen,
-                    right_grouping: Grouping::CloseParen,
-                    expr: vec![denominator],
-                    span: numerator.span(),
-                });
+                let denominator = if denominator.is_scripted() {
+                    SimpleExpr::Interm(Box::new(denominator))
+                } else {
+                    denominator.into_interm_with(|inner| match inner {
+                        SimpleExpr::Grouping(grp) => {
+                            SimpleExpr::Grouping(grp.ignored_parentheses())
+                        }
+                        _ => inner,
+                    })
+                };
 
                 let binary = Binary {
                     kind: BinaryKind::Fraction,
@@ -187,7 +191,7 @@ impl<'s> AsciiMath<'s> {
                 };
 
                 return Some(Expression {
-                    val: SimpleExpr::Binary(binary),
+                    interm: SimpleExpr::Binary(binary),
                     subscript: None,
                     supscript: None,
                 });

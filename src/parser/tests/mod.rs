@@ -64,7 +64,7 @@ impl std::fmt::Display for Snapshot<&Expression> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str("Expression {\n")?;
 
-        let val = format!("{}", Snapshot(&self.0.val))
+        let val = format!("{}", Snapshot(&self.0.interm))
             .lines()
             .map(|l| format!("{}{l}", indent(1)))
             .collect::<Vec<_>>()
@@ -121,6 +121,18 @@ impl std::fmt::Display for Snapshot<&SimpleExpr> {
             }
             SimpleExpr::Unary(unary) => f.write_fmt(format_args!("{}", Snapshot(unary))),
             SimpleExpr::Binary(binary) => f.write_fmt(format_args!("{}", Snapshot(binary))),
+            SimpleExpr::Interm(interm) => {
+                f.write_str("Interm {\n")?;
+
+                let val = format!("{}", Snapshot(&**interm))
+                    .lines()
+                    .map(|l| format!("{}{l}", indent(1)))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+
+                f.write_str(&val)?;
+                f.write_str("}\n")
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ generate_impl!(
     Operators,
     "+" => Plus,
     "-" => Minus,
+    "'" => Prime,
     "*" | "cdot" => Dot,
     "**" | "ast" => Asterisk,
     "***" | "star" => Star,
@@ -50,6 +51,7 @@ impl From<Operator> for alemat::elements::Operator {
         match value {
             self::Operator::Plus => Operator::plus(),
             self::Operator::Minus => Operator::minus(),
+            self::Operator::Prime => Operator::from("'"),
             self::Operator::Dot => Operator::dot(),
             self::Operator::Asterisk => Operator::asterisk(),
             self::Operator::Star => Operator::star(),

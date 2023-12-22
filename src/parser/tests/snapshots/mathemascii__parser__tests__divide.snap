@@ -6,18 +6,8 @@ a/b
 
 Expression {
 | Fraction(
-| | OpenParen
-| | | Expression {
-| | | | Variable("a")
-| | | }
-| | |
-| | CloseParen,
-| | OpenParen
-| | | Expression {
-| | | | Variable("b")
-| | | }
-| | |
-| | CloseParen
+| | Variable("a"),
+| | Variable("b")
 | )
 }
 
