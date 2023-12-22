@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/nfejzic/mathemascii/compare/v0.3.0...v0.3.1) (2023-12-22)
+
+
+### Bug Fixes
+
+* remove left-over `dbg!` statement ([#12](https://github.com/nfejzic/mathemascii/issues/12)) ([5677a4e](https://github.com/nfejzic/mathemascii/commit/5677a4eb272cbdf0e327cba602214e58bbe71078))
+
 ## [0.3.0](https://github.com/nfejzic/mathemascii/compare/v0.2.0...v0.3.0) (2023-12-22)
 
 
