@@ -31,6 +31,7 @@ generate_impl!(
     "uu" | "cup" => Cup,
     "uuu" | "bigcup" => BigCup,
     prefixes:
+        Minus => "-:",
         Dot => "**",
         Asterisk => "***",
         LTimes => "|><|",
