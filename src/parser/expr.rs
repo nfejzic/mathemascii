@@ -351,7 +351,7 @@ impl IntoElements for SimpleExpr {
                 }
 
                 elements.append(&mut rg);
-                elements
+                Row::from(elements).into_elements()
             }
             SimpleExpr::Unary(unary) => unary.into_elements(),
             SimpleExpr::Binary(binary) => binary.into_elements(),
