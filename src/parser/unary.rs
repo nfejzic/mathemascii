@@ -6,10 +6,12 @@ use alemat::{
     Attribute, Elements,
 };
 
-use crate::lexer::{
-    keywords::{accents::Accent, font_commands::FontCommand, groupings::Grouping, others::Other},
-    Span, TokenKind,
-};
+use crate::lexer::keywords::accents::Accent;
+use crate::lexer::keywords::font_commands::FontCommand;
+use crate::lexer::keywords::groupings::Grouping;
+use crate::lexer::keywords::others::Other;
+use crate::lexer::{Span, TokenKind};
+use crate::{Var, VarKind};
 
 use super::{expr::SimpleExpr, AsciiMath};
 
@@ -153,11 +155,23 @@ impl Unary {
         let token = parser.iter.peek()?;
         let unary_kind = UnaryKind::try_from(token.kind()).ok()?;
 
-        let start = token.span().start;
+        let span = token.span();
+        let start = span.start;
 
         parser.iter.next(); // skip unary token
 
-        let expr = Box::new(parser.parse_simple_expr()?);
+        let expr = parser.parse_simple_expr().unwrap_or_else(|| {
+            // empty operator per default
+            SimpleExpr::Var(Var {
+                kind: VarKind::UnknownOperator(String::default()),
+                span: Span {
+                    start: span.end,
+                    end: span.end,
+                },
+            })
+        });
+
+        let expr = Box::new(expr);
 
         let end = expr.span().end;
 
