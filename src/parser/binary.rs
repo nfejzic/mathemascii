@@ -91,16 +91,32 @@ impl Binary {
         let token = parser.iter.peek()?;
         let binary_kind = BinaryKind::try_from(token.kind()).ok()?;
 
-        let start = token.span().start;
+        let span = token.span();
+        let start = span.start;
 
         parser.iter.next(); // skip binary token
 
-        let expr_1 = match binary_kind {
-            BinaryKind::Color => Box::new(parser.parse_grouping_as_str()?),
-            _ => Box::new(parser.parse_simple_expr()?),
+        let default_expr = || {
+            SimpleExpr::Var(Var {
+                kind: VarKind::UnknownOperator(String::default()),
+                span,
+            })
         };
 
-        let expr_2 = Box::new(parser.parse_simple_expr()?);
+        let expr_1 = match binary_kind {
+            BinaryKind::Color => Box::new(parser.parse_grouping_as_str().unwrap_or_else(|| {
+                SimpleExpr::Var(Var {
+                    kind: VarKind::Text(String::from("black")),
+                    span: Span {
+                        start: span.end,
+                        end: span.end,
+                    },
+                })
+            })),
+            _ => Box::new(parser.parse_simple_expr().unwrap_or_else(default_expr)),
+        };
+
+        let expr_2 = Box::new(parser.parse_simple_expr().unwrap_or_else(default_expr));
 
         let end = expr_2.span().end;
 
