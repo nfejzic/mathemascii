@@ -32,8 +32,8 @@ impl From<Logical> for alemat::elements::Operator {
         use alemat::elements::Operator;
 
         match value {
-            Logical::And => Operator::vee(),
-            Logical::Or => Operator::wedge(),
+            Logical::And => Operator::wedge(),
+            Logical::Or => Operator::vee(),
             Logical::Not => Operator::not(),
             Logical::Implies => Operator::implies(),
             Logical::If => Operator::from("if"),
