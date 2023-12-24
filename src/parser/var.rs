@@ -37,6 +37,10 @@ pub enum VarKind {
     /// Operator, i.e. `+` or `-`.
     Operator(Operator),
 
+    /// Non-letter symbols not recognized by other keyword definitions fall back to operator, i.e.
+    /// `;` or `.`.
+    UnknownOperator(String),
+
     /// Other symbols, like comma (`,`) for example.
     Other(Other),
 
@@ -57,7 +61,8 @@ impl TryFrom<Token<'_>> for VarKind {
             TokenKind::Relation(r) => Self::Relation(r),
             TokenKind::Logical(l) => Self::Logical(l),
             TokenKind::Operator(op) => Self::Operator(op),
-            TokenKind::Other(other) if token.is_var() => match other {
+            TokenKind::UnknownOperator => Self::UnknownOperator(token.as_str().into()),
+            TokenKind::Other(other) => match other {
                 Other::Text => Self::Text(token.as_str().into()),
                 _ => Self::Other(other),
             },
@@ -125,6 +130,7 @@ impl IntoElements for Var {
             VarKind::Other(ot) => [ot].into_elements(),
             VarKind::Text(txt) => Text::from(txt).into_elements(),
             VarKind::Number(num) => Num::from(num.as_str()).into_elements(),
+            VarKind::UnknownOperator(op) => Operator::from(op).into_elements(),
         }
     }
 }

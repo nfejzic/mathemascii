@@ -77,6 +77,10 @@ pub(crate) enum TokenKind {
     /// Standard operators, e.g. +, -, *, |>< etc.
     Operator(Operator),
 
+    /// Symbols that are not letters, and aren't explicitely defined in AsciiMath grammar fall back
+    /// to unknown operators.
+    UnknownOperator,
+
     /// Relations in maths, e.g. =, !=, <, <= etc.
     Relation(Relation),
 

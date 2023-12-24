@@ -156,6 +156,7 @@ impl std::fmt::Display for Snapshot<VarKind> {
             VarKind::Operator(op) => format!("{:?}", TokenKind::from(*op)),
             VarKind::Other(ot) => format!("{:?}", TokenKind::from(*ot)),
             VarKind::Text(t) => format!("'{t}'"),
+            VarKind::UnknownOperator(op) => format!("'{op}"),
         };
 
         f.write_str(&snap)

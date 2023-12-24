@@ -71,10 +71,13 @@ impl<'s> AsciiMath<'s> {
     fn parse_simple_expr(&mut self) -> Option<SimpleExpr> {
         let token = self.iter.peek()?;
 
-        if let (TokenKind::Grouping(grouping), Err(_)) =
-            (token.kind(), UnaryKind::try_from(token.kind()))
-        {
-            let start = token.span().start;
+        if let (TokenKind::Grouping(grouping), Err(_), Err(_)) = (
+            token.kind(),
+            UnaryKind::try_from(token.kind()),
+            BinaryKind::try_from(token.kind()),
+        ) {
+            let span = token.span();
+            let start = span.start;
 
             let _ = self.iter.next(); // skip open grouping token
 
@@ -110,11 +113,8 @@ impl<'s> AsciiMath<'s> {
             return Binary::parse(self).map(SimpleExpr::Binary);
         }
 
-        if token.is_var() {
-            return Var::parse(self).map(SimpleExpr::Var);
-        }
-
-        None
+        // fallback to var
+        return Var::parse(self).map(SimpleExpr::Var);
     }
 
     fn parse_interm_expr(&mut self) -> Option<Expression> {
