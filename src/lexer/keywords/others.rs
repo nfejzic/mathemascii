@@ -112,7 +112,9 @@ impl From<Other> for Element {
             Other::Rational => Ident::set_rational().into(),
             Other::Irrational => Ident::set_irrational().into(),
             Other::Integer => Ident::set_integer().into(),
-            _ => unreachable!("Element cannot be constructed from {:?}", value),
+
+            // Fallback to string representation
+            _ => Operator::from(value.as_ref().to_string()).into(),
         }
     }
 }
