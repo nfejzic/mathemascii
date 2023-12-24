@@ -86,3 +86,20 @@ pub(crate) enum TokenKind {
     #[default]
     Unimplemented,
 }
+
+impl TokenKind {
+    pub fn is_grouping_open(&self) -> bool {
+        let TokenKind::Grouping(grp) = self else {
+            return false;
+        };
+
+        !matches!(
+            grp,
+            Grouping::CloseParen
+                | Grouping::CloseBracket
+                | Grouping::CloseBrace
+                | Grouping::RightAngled
+                | Grouping::CloseIgnored
+        )
+    }
+}

@@ -48,11 +48,9 @@ pub enum VarKind {
     Text(String),
 }
 
-impl TryFrom<Token<'_>> for VarKind {
-    type Error = ();
-
-    fn try_from(token: Token) -> Result<Self, Self::Error> {
-        let s = match token.kind() {
+impl From<Token<'_>> for VarKind {
+    fn from(token: Token) -> Self {
+        match token.kind() {
             TokenKind::Function(f) => Self::Function(f),
             TokenKind::Number => Self::Number(token.as_str().into()),
             TokenKind::Greek(g) => Self::Greek(g),
@@ -67,10 +65,8 @@ impl TryFrom<Token<'_>> for VarKind {
                 _ => Self::Other(other),
             },
 
-            _ => return Err(()),
-        };
-
-        Ok(s)
+            _ => return Self::UnknownOperator(token.as_str().into()),
+        }
     }
 }
 
@@ -89,14 +85,12 @@ impl Var {
     pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
         let token = parser.iter.next()?;
 
-        if let Ok(var_kind) = VarKind::try_from(token) {
-            return Some(Self {
-                kind: var_kind,
-                span: token.span(),
-            });
-        }
+        let var_kind = VarKind::from(token);
 
-        None
+        Some(Self {
+            kind: var_kind,
+            span: token.span(),
+        })
     }
 
     /// Returns the [`Span`] occupied by this variable.

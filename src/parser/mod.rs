@@ -16,10 +16,9 @@ pub use grouping::*;
 pub use unary::*;
 pub use var::*;
 
-use crate::{
-    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind},
-    scanner::Symbols,
-};
+use crate::lexer::keywords::{groupings::Grouping, others::Other};
+use crate::lexer::{Span, Token, TokenIterator, TokenKind};
+use crate::scanner::Symbols;
 
 /// Iterator that parses AsciiMath input and yields [`Expression`]s.
 #[derive(Debug, Clone)]
@@ -71,28 +70,42 @@ impl<'s> AsciiMath<'s> {
     fn parse_simple_expr(&mut self) -> Option<SimpleExpr> {
         let token = self.iter.peek()?;
 
-        if let (TokenKind::Grouping(grouping), Err(_), Err(_)) = (
-            token.kind(),
+        if let (true, Err(_), Err(_)) = (
+            token.kind().is_grouping_open(),
             UnaryKind::try_from(token.kind()),
             BinaryKind::try_from(token.kind()),
         ) {
+            let TokenKind::Grouping(grouping) = token.kind() else {
+                unreachable!("Must be grouping at this point.");
+            };
             let span = token.span();
             let start = span.start;
 
             let _ = self.iter.next(); // skip open grouping token
 
             let mut exprs = Vec::default();
+            let mut end = span.end;
 
             let (r_grouping, end) = loop {
-                let expr = self.parse_expr()?;
+                let Some(expr) = self.parse_expr() else {
+                    break (Grouping::CloseIgnored, end);
+                };
 
+                end = expr.span().end;
                 exprs.push(expr);
 
-                if let TokenKind::Grouping(r_grouping) = self.iter.peek()?.kind() {
+                // if None next iteration of loop will handle it as `Grouping::CloseIgnored`
+                if let TokenKind::Grouping(r_grouping) = self
+                    .iter
+                    .peek()
+                    .map(Token::kind)
+                    .unwrap_or(TokenKind::Grouping(Grouping::CloseIgnored))
+                {
                     if grouping.matches(r_grouping) {
-                        let t = self.iter.next()?; // skip grouping token
+                        // skip grouping token
+                        let e = self.iter.next().map(|t| t.span()).map_or(end, |s| s.end);
 
-                        break (r_grouping, t.span().end);
+                        break (r_grouping, e);
                     }
                 }
             };
