@@ -127,7 +127,7 @@ impl<'s> AsciiMath<'s> {
         }
 
         // fallback to var
-        return Var::parse(self).map(SimpleExpr::Var);
+        Var::parse(self).map(SimpleExpr::Var)
     }
 
     fn parse_interm_expr(&mut self) -> Option<Expression> {
