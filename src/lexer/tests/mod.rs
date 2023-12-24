@@ -4,6 +4,7 @@ use super::Span;
 
 mod accents;
 mod arrows;
+mod fallback;
 mod font_commands;
 mod functions;
 mod greeks;
@@ -26,6 +27,9 @@ macro_rules! test_snap {
 }
 
 use test_snap;
+
+test_snap!(skip_whitespace, "   alpha   24.42");
+test_snap!(division, "a/b");
 
 struct Snapshot<T>(T);
 
@@ -69,9 +73,6 @@ impl std::fmt::Display for Snapshot<Span> {
         f.write_fmt(format_args!("{} -> {}", self.0.start, self.0.end))
     }
 }
-
-test_snap!(skip_whitespace, "   alpha   24.42");
-test_snap!(division, "a/b");
 
 #[test]
 fn perf() {
