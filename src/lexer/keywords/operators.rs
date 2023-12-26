@@ -12,7 +12,7 @@ generate_impl!(
     "**" | "ast" => Asterisk,
     "***" | "star" => Star,
     "//" => ForwardSlashLiteral,
-    "\\" | "backslash" | "setminus" => Backslash,
+    "\\\\" | "backslash" | "setminus" => Backslash,
     "xx" | "times" => Times,
     "-:" | "div" => Divide,
     "|><" | "ltimes" => LTimes,
