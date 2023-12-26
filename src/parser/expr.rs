@@ -143,6 +143,10 @@ impl Expression {
             return false;
         };
 
+        if !grp.is_matrix_grp() {
+            return false;
+        }
+
         let mut len = 0;
 
         for e in &grp.expr {

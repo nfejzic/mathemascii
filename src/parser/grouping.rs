@@ -65,6 +65,32 @@ impl GroupingExpr {
     pub fn iter_inner(&self) -> impl Iterator<Item = &Expression> {
         self.expr.iter()
     }
+
+    pub(crate) fn is_matrix_grp(&self) -> bool {
+        match (self.left_grouping, self.right_grouping) {
+            // matrix can't be surrounded with both { and }
+            (Grouping::OpenBrace, Grouping::CloseBrace) => false,
+
+            (
+                Grouping::Absolute
+                | Grouping::Floor
+                | Grouping::Ceiling
+                | Grouping::NormFn
+                | Grouping::Norm,
+                _,
+            ) => false,
+            (
+                _,
+                Grouping::Absolute
+                | Grouping::Floor
+                | Grouping::Ceiling
+                | Grouping::NormFn
+                | Grouping::Norm,
+            ) => false,
+
+            _ => true,
+        }
+    }
 }
 
 impl IntoElements for GroupingExpr {
