@@ -78,6 +78,7 @@ impl<'s> AsciiMath<'s> {
             let TokenKind::Grouping(grouping) = token.kind() else {
                 unreachable!("Must be grouping at this point.");
             };
+
             let span = token.span();
             let start = span.start;
 
