@@ -90,7 +90,7 @@ impl TryFrom<Grouping> for UnaryKind {
             Grouping::Absolute => Self::Absolute,
             Grouping::Floor => Self::Floor,
             Grouping::Ceiling => Self::Ceiling,
-            Grouping::Norm => Self::Norm,
+            Grouping::NormFn => Self::Norm,
             _ => return Err(()),
         };
 
@@ -267,10 +267,10 @@ impl IntoElements for Unary {
                 el
             }
             UnaryKind::Norm => {
-                let mut el = Operator::from("||").into_elements();
+                let mut el = Operator::norm().into_elements();
                 el.append(&mut inner);
-                el.push(Operator::from("||").into());
-                el
+                el.push(Operator::norm().into());
+                Row::from(el).into_elements()
             }
             UnaryKind::Bold => Style::from(inner)
                 .with_attr([Attribute::MathVariant(MathVariant::Bold)])
