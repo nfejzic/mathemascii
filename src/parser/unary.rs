@@ -207,7 +207,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::Underline => children![UnderOver::builder()
                 .expr(inner)
-                .under(Operator::from("_"))
+                .under(Operator::bar())
                 .build()]
             .into_elements(),
             UnaryKind::Vector => children![UnderOver::builder()
@@ -217,7 +217,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::Tilde => children![UnderOver::builder()
                 .expr(inner)
-                .over(Operator::from("~"))
+                .over(Operator::tilde())
                 .build()]
             .into_elements(),
             UnaryKind::Dot => children![UnderOver::builder()
@@ -227,7 +227,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::DoubleDot => children![UnderOver::builder()
                 .expr(inner)
-                .over(Operator::from(".."))
+                .over(Operator::double_dot())
                 .build()]
             .into_elements(),
             UnaryKind::Underbrace => children![UnderOver::builder()
