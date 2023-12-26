@@ -134,6 +134,9 @@ impl Binary {
 impl IntoElements for Binary {
     fn into_elements(self) -> Elements {
         let to_elements = |expr: Box<SimpleExpr>| match *expr {
+            SimpleExpr::Grouping(grp) if grp.is_simple_grp() => {
+                grp.ungroup_map(|e| e.into_elements()).collect()
+            }
             SimpleExpr::Grouping(grp) => grp.into_elements(),
             _ => expr.into_elements(),
         };

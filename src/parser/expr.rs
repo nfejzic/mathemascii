@@ -110,10 +110,6 @@ impl Expression {
         Span { start, end }
     }
 
-    pub(crate) fn into_interm_with(self, f: impl FnOnce(SimpleExpr) -> SimpleExpr) -> SimpleExpr {
-        f(self.interm)
-    }
-
     /// Checks whether the expression has subscript or superscript.
     pub fn is_scripted(&self) -> bool {
         self.subscript.is_some() || self.supscript.is_some()
@@ -134,6 +130,17 @@ impl Expression {
         match self.interm {
             SimpleExpr::Var(ref var) => var.is_comma(),
             _ => false,
+        }
+    }
+
+    pub(crate) fn default_with_span(span: Span) -> Self {
+        Expression {
+            interm: SimpleExpr::Var(Var {
+                kind: VarKind::Text(String::from("")),
+                span,
+            }),
+            subscript: None,
+            supscript: None,
         }
     }
 

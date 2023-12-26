@@ -1,7 +1,10 @@
-use alemat::elements::IntoElements;
+use alemat::{elements::IntoElements, Element, Elements};
 
 use crate::{
-    lexer::{keywords::groupings::Grouping, Span},
+    lexer::{
+        keywords::groupings::{Grouping, GrpCtxt},
+        Span,
+    },
     Expression,
 };
 
@@ -66,6 +69,32 @@ impl GroupingExpr {
         self.expr.iter()
     }
 
+    /// Checks whether the grouping is one of:
+    ///
+    /// * parentheses `()`
+    /// * brackets `[]`
+    /// * braces `{}`
+    /// * ignored `{:` or `:}`
+    pub fn is_simple_grp(&self) -> bool {
+        let is_left_simple = matches!(
+            self.left_grouping,
+            Grouping::OpenParen
+                | Grouping::OpenBracket
+                | Grouping::OpenBrace
+                | Grouping::OpenIgnored
+        );
+
+        let is_right_simple = matches!(
+            self.right_grouping,
+            Grouping::CloseParen
+                | Grouping::CloseBracket
+                | Grouping::CloseBrace
+                | Grouping::CloseIgnored
+        );
+
+        is_left_simple && is_right_simple
+    }
+
     pub(crate) fn is_matrix_grp(&self) -> bool {
         match (self.left_grouping, self.right_grouping) {
             // matrix can't be surrounded with both { and }
@@ -95,9 +124,25 @@ impl GroupingExpr {
 
 impl IntoElements for GroupingExpr {
     fn into_elements(self) -> alemat::Elements {
-        self.expr
-            .into_iter()
-            .map(IntoElements::into_elements)
-            .collect()
+        let mut el = alemat::children![GrpCtxt {
+            grp: self.left_grouping,
+            is_opening: true,
+        }]
+        .into_elements();
+
+        el.append(
+            &mut self
+                .expr
+                .into_iter()
+                .map(IntoElements::into_elements)
+                .collect::<Elements>(),
+        );
+
+        el.push(Element::from(GrpCtxt {
+            grp: self.right_grouping,
+            is_opening: false,
+        }));
+
+        el
     }
 }

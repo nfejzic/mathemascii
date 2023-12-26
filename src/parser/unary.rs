@@ -1,10 +1,9 @@
-use alemat::{
-    attributes::MathVariant,
-    elements::{
-        grouping::Style, radicals::Radical, scripted::UnderOver, IntoElements, Num, Operator,
-    },
-    Attribute, Elements,
-};
+use alemat::attributes::MathVariant;
+use alemat::elements::grouping::{Row, Style};
+use alemat::elements::radicals::Radical;
+use alemat::elements::scripted::UnderOver;
+use alemat::elements::{IntoElements, Num, Operator};
+use alemat::{Attribute, Elements};
 
 use crate::lexer::keywords::accents::Accent;
 use crate::lexer::keywords::font_commands::FontCommand;
@@ -188,6 +187,9 @@ impl IntoElements for Unary {
         use alemat::children;
 
         let mut inner = match *self.expr {
+            SimpleExpr::Grouping(grp) if grp.is_simple_grp() => {
+                grp.ungroup_map(|e| e.into_elements()).collect()
+            }
             SimpleExpr::Grouping(grp) => grp.into_elements(),
             _ => self.expr.into_elements(),
         };

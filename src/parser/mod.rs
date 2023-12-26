@@ -54,9 +54,9 @@ impl<'s> AsciiMath<'s> {
                     end = token.span().end;
                     break;
                 }
-            } else {
-                content.push_str(token.as_str());
             }
+
+            content.push_str(token.as_str());
         }
 
         let var = Var {
@@ -168,7 +168,13 @@ impl<'s> AsciiMath<'s> {
                 let numerator = interm;
 
                 self.iter.next(); // skip '/' token
-                let denominator = self.parse_expr()?;
+
+                let denominator = self.parse_interm_expr().unwrap_or_else(|| {
+                    Expression::default_with_span(Span {
+                        start: numerator.span().end,
+                        end: numerator.span().end,
+                    })
+                });
 
                 let start = numerator.span().start;
                 let end = denominator.span().end;
@@ -178,23 +184,13 @@ impl<'s> AsciiMath<'s> {
                 let numerator = if numerator.is_scripted() {
                     SimpleExpr::Interm(Box::new(numerator))
                 } else {
-                    numerator.into_interm_with(|inner| match inner {
-                        SimpleExpr::Grouping(grp) => {
-                            SimpleExpr::Grouping(grp.ignored_parentheses())
-                        }
-                        _ => inner,
-                    })
+                    numerator.interm
                 };
 
                 let denominator = if denominator.is_scripted() {
                     SimpleExpr::Interm(Box::new(denominator))
                 } else {
-                    denominator.into_interm_with(|inner| match inner {
-                        SimpleExpr::Grouping(grp) => {
-                            SimpleExpr::Grouping(grp.ignored_parentheses())
-                        }
-                        _ => inner,
-                    })
+                    denominator.interm
                 };
 
                 let binary = Binary {
