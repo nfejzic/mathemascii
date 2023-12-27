@@ -314,12 +314,12 @@ impl IntoElements for Expression {
         };
 
         let sub = self.subscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_into_elements(),
             _ => s.into_elements(),
         });
 
         let sup = self.supscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_into_elements(),
             _ => s.into_elements(),
         });
 

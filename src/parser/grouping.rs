@@ -45,8 +45,11 @@ impl GroupingExpr {
 
     /// Returns an iterator over the group of expression inside the grouping without the grouping
     /// symbols and mapped by the given function.
-    pub(crate) fn ungroup_map<T>(self, f: impl FnMut(Expression) -> T) -> impl Iterator<Item = T> {
-        self.ungroup().into_iter().map(f)
+    pub(crate) fn ungroup_into_elements(self) -> Elements {
+        self.ungroup()
+            .into_iter()
+            .map(IntoElements::into_elements)
+            .collect()
     }
 
     /// Checks whether the grouping contains any expressions.

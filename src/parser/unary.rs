@@ -187,9 +187,7 @@ impl IntoElements for Unary {
         use alemat::children;
 
         let mut inner = match *self.expr {
-            SimpleExpr::Grouping(grp) if grp.is_simple_grp() => {
-                grp.ungroup_map(|e| e.into_elements()).collect()
-            }
+            SimpleExpr::Grouping(grp) if grp.is_simple_grp() => grp.ungroup_into_elements(),
             SimpleExpr::Grouping(grp) => grp.into_elements(),
             _ => self.expr.into_elements(),
         };
