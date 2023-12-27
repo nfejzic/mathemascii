@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.0.0](https://github.com/nfejzic/mathemascii/compare/v0.3.1...v1.0.0) (2023-12-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove `Token::is_var` method
+* improve rendering with fallbacks during parsing ([#14](https://github.com/nfejzic/mathemascii/issues/14))
+
+### Features
+
+* fallback to operator when no expr recognized ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* implicitly close grouping expressions ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* improve rendering with fallbacks during parsing ([#14](https://github.com/nfejzic/mathemascii/issues/14)) ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* remove `Token::is_var` method ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+
+
+### Bug Fixes
+
+* add fallback to Element conversion for Other keyword ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* add fallbacks when parsing color binary expr ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* correctly handle `norm` groupings ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* correctly lex set minus operators ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* correctly lex the divide symbol `-:` ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* correctly parse `cdots`, `ldots` etc ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* correctly render `and` and `or` logicals ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* fallback to default expression when parsing unary ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* fallback to operator when lexing unknown symbol ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* handle dots as operators instead of idents ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* improve handling of cdots etc ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* improve handling of matrix groupings ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* render groupings in a `mrow` element ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* simplify handling of groupings ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* simplify ungroup_map by direct conversion ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* use more operator constructors ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+* use more pre-defined operator constructors ([7d8c86a](https://github.com/nfejzic/mathemascii/commit/7d8c86acc63a2e8337f7108c6f6a5972719ff202))
+
 ## [0.3.1](https://github.com/nfejzic/mathemascii/compare/v0.3.0...v0.3.1) (2023-12-22)
 
 
