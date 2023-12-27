@@ -23,7 +23,8 @@ generate_impl!(
     "abs" => Absolute,
     "floor" => Floor,
     "ceil" => Ceiling,
-    "norm" => Norm,
+    "norm" => NormFn,
+    "||" => Norm,
     prefixes:
         OpenParen => "(:",
         OpenBrace => "{:"
@@ -67,7 +68,7 @@ impl From<GrpCtxt> for Element {
             Grouping::Floor => Operator::rfloor().into(),
             Grouping::Ceiling if is_opening => Operator::lceiling().into(),
             Grouping::Ceiling => Operator::rceiling().into(),
-            Grouping::Norm => Operator::from("||").into(),
+            Grouping::NormFn | Grouping::Norm => Operator::norm().into(),
         }
     }
 }

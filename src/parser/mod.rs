@@ -16,10 +16,9 @@ pub use grouping::*;
 pub use unary::*;
 pub use var::*;
 
-use crate::{
-    lexer::{keywords::others::Other, Span, TokenIterator, TokenKind},
-    scanner::Symbols,
-};
+use crate::lexer::keywords::{groupings::Grouping, others::Other};
+use crate::lexer::{Span, Token, TokenIterator, TokenKind};
+use crate::scanner::Symbols;
 
 /// Iterator that parses AsciiMath input and yields [`Expression`]s.
 #[derive(Debug, Clone)]
@@ -55,9 +54,9 @@ impl<'s> AsciiMath<'s> {
                     end = token.span().end;
                     break;
                 }
-            } else {
-                content.push_str(token.as_str());
             }
+
+            content.push_str(token.as_str());
         }
 
         let var = Var {
@@ -71,25 +70,43 @@ impl<'s> AsciiMath<'s> {
     fn parse_simple_expr(&mut self) -> Option<SimpleExpr> {
         let token = self.iter.peek()?;
 
-        if let (TokenKind::Grouping(grouping), Err(_)) =
-            (token.kind(), UnaryKind::try_from(token.kind()))
-        {
-            let start = token.span().start;
+        if let (true, Err(_), Err(_)) = (
+            token.kind().is_grouping_open(),
+            UnaryKind::try_from(token.kind()),
+            BinaryKind::try_from(token.kind()),
+        ) {
+            let TokenKind::Grouping(grouping) = token.kind() else {
+                unreachable!("Must be grouping at this point.");
+            };
+
+            let span = token.span();
+            let start = span.start;
 
             let _ = self.iter.next(); // skip open grouping token
 
             let mut exprs = Vec::default();
+            let mut end = span.end;
 
             let (r_grouping, end) = loop {
-                let expr = self.parse_expr()?;
+                let Some(expr) = self.parse_expr() else {
+                    break (Grouping::CloseIgnored, end);
+                };
 
+                end = expr.span().end;
                 exprs.push(expr);
 
-                if let TokenKind::Grouping(r_grouping) = self.iter.peek()?.kind() {
+                // if None next iteration of loop will handle it as `Grouping::CloseIgnored`
+                if let TokenKind::Grouping(r_grouping) = self
+                    .iter
+                    .peek()
+                    .map(Token::kind)
+                    .unwrap_or(TokenKind::Grouping(Grouping::CloseIgnored))
+                {
                     if grouping.matches(r_grouping) {
-                        let t = self.iter.next()?; // skip grouping token
+                        // skip grouping token
+                        let e = self.iter.next().map(|t| t.span()).map_or(end, |s| s.end);
 
-                        break (r_grouping, t.span().end);
+                        break (r_grouping, e);
                     }
                 }
             };
@@ -110,11 +127,8 @@ impl<'s> AsciiMath<'s> {
             return Binary::parse(self).map(SimpleExpr::Binary);
         }
 
-        if token.is_var() {
-            return Var::parse(self).map(SimpleExpr::Var);
-        }
-
-        None
+        // fallback to var
+        Var::parse(self).map(SimpleExpr::Var)
     }
 
     fn parse_interm_expr(&mut self) -> Option<Expression> {
@@ -154,7 +168,13 @@ impl<'s> AsciiMath<'s> {
                 let numerator = interm;
 
                 self.iter.next(); // skip '/' token
-                let denominator = self.parse_expr()?;
+
+                let denominator = self.parse_interm_expr().unwrap_or_else(|| {
+                    Expression::default_with_span(Span {
+                        start: numerator.span().end,
+                        end: numerator.span().end,
+                    })
+                });
 
                 let start = numerator.span().start;
                 let end = denominator.span().end;
@@ -164,23 +184,13 @@ impl<'s> AsciiMath<'s> {
                 let numerator = if numerator.is_scripted() {
                     SimpleExpr::Interm(Box::new(numerator))
                 } else {
-                    numerator.into_interm_with(|inner| match inner {
-                        SimpleExpr::Grouping(grp) => {
-                            SimpleExpr::Grouping(grp.ignored_parentheses())
-                        }
-                        _ => inner,
-                    })
+                    numerator.interm
                 };
 
                 let denominator = if denominator.is_scripted() {
                     SimpleExpr::Interm(Box::new(denominator))
                 } else {
-                    denominator.into_interm_with(|inner| match inner {
-                        SimpleExpr::Grouping(grp) => {
-                            SimpleExpr::Grouping(grp.ignored_parentheses())
-                        }
-                        _ => inner,
-                    })
+                    denominator.interm
                 };
 
                 let binary = Binary {

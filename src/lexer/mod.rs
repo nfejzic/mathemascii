@@ -250,16 +250,16 @@ impl<'src> TokenIterator<'src> {
 
     fn lex_variable(&self, _: usize) -> Option<(Token<'src>, usize)> {
         let mut cursor = self.curr;
+        let mut kind = TokenKind::Variable;
 
         let sym = self.src.get(cursor)?;
 
-        if !sym.is_letter() {
-            return None;
-        }
-
         cursor += 1;
 
-        if sym.content == "d" {
+        if !sym.is_letter() {
+            // ascii math interprets not-recognized symbols that are not letters as operators
+            kind = TokenKind::UnknownOperator;
+        } else if sym.content == "d" {
             // might be derivative
             if let Some(sym) = self.src.get(cursor) {
                 if matches!(sym.content, "x" | "y" | "z" | "t") {
@@ -274,7 +274,7 @@ impl<'src> TokenIterator<'src> {
         };
 
         let content = Symbol::as_str(self.src.get(self.curr..cursor)?)?;
-        let token = Token::with_span(content, TokenKind::Variable, span);
+        let token = Token::with_span(content, kind, span);
 
         Some((token, cursor))
     }

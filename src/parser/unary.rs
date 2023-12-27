@@ -1,15 +1,16 @@
-use alemat::{
-    attributes::MathVariant,
-    elements::{
-        grouping::Style, radicals::Radical, scripted::UnderOver, IntoElements, Num, Operator,
-    },
-    Attribute, Elements,
-};
+use alemat::attributes::MathVariant;
+use alemat::elements::grouping::{Row, Style};
+use alemat::elements::radicals::Radical;
+use alemat::elements::scripted::UnderOver;
+use alemat::elements::{IntoElements, Num, Operator};
+use alemat::{Attribute, Elements};
 
-use crate::lexer::{
-    keywords::{accents::Accent, font_commands::FontCommand, groupings::Grouping, others::Other},
-    Span, TokenKind,
-};
+use crate::lexer::keywords::accents::Accent;
+use crate::lexer::keywords::font_commands::FontCommand;
+use crate::lexer::keywords::groupings::Grouping;
+use crate::lexer::keywords::others::Other;
+use crate::lexer::{Span, TokenKind};
+use crate::{Var, VarKind};
 
 use super::{expr::SimpleExpr, AsciiMath};
 
@@ -89,7 +90,7 @@ impl TryFrom<Grouping> for UnaryKind {
             Grouping::Absolute => Self::Absolute,
             Grouping::Floor => Self::Floor,
             Grouping::Ceiling => Self::Ceiling,
-            Grouping::Norm => Self::Norm,
+            Grouping::NormFn => Self::Norm,
             _ => return Err(()),
         };
 
@@ -153,11 +154,23 @@ impl Unary {
         let token = parser.iter.peek()?;
         let unary_kind = UnaryKind::try_from(token.kind()).ok()?;
 
-        let start = token.span().start;
+        let span = token.span();
+        let start = span.start;
 
         parser.iter.next(); // skip unary token
 
-        let expr = Box::new(parser.parse_simple_expr()?);
+        let expr = parser.parse_simple_expr().unwrap_or_else(|| {
+            // empty operator per default
+            SimpleExpr::Var(Var {
+                kind: VarKind::UnknownOperator(String::default()),
+                span: Span {
+                    start: span.end,
+                    end: span.end,
+                },
+            })
+        });
+
+        let expr = Box::new(expr);
 
         let end = expr.span().end;
 
@@ -174,6 +187,7 @@ impl IntoElements for Unary {
         use alemat::children;
 
         let mut inner = match *self.expr {
+            SimpleExpr::Grouping(grp) if grp.is_simple_grp() => grp.ungroup_into_elements(),
             SimpleExpr::Grouping(grp) => grp.into_elements(),
             _ => self.expr.into_elements(),
         };
@@ -191,7 +205,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::Underline => children![UnderOver::builder()
                 .expr(inner)
-                .under(Operator::from("_"))
+                .under(Operator::bar())
                 .build()]
             .into_elements(),
             UnaryKind::Vector => children![UnderOver::builder()
@@ -201,7 +215,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::Tilde => children![UnderOver::builder()
                 .expr(inner)
-                .over(Operator::from("~"))
+                .over(Operator::tilde())
                 .build()]
             .into_elements(),
             UnaryKind::Dot => children![UnderOver::builder()
@@ -211,7 +225,7 @@ impl IntoElements for Unary {
             .into_elements(),
             UnaryKind::DoubleDot => children![UnderOver::builder()
                 .expr(inner)
-                .over(Operator::from(".."))
+                .over(Operator::double_dot())
                 .build()]
             .into_elements(),
             UnaryKind::Underbrace => children![UnderOver::builder()
@@ -251,10 +265,10 @@ impl IntoElements for Unary {
                 el
             }
             UnaryKind::Norm => {
-                let mut el = Operator::from("||").into_elements();
+                let mut el = Operator::norm().into_elements();
                 el.append(&mut inner);
-                el.push(Operator::from("||").into());
-                el
+                el.push(Operator::norm().into());
+                Row::from(el).into_elements()
             }
             UnaryKind::Bold => Style::from(inner)
                 .with_attr([Attribute::MathVariant(MathVariant::Bold)])

@@ -110,10 +110,6 @@ impl Expression {
         Span { start, end }
     }
 
-    pub(crate) fn into_interm_with(self, f: impl FnOnce(SimpleExpr) -> SimpleExpr) -> SimpleExpr {
-        f(self.interm)
-    }
-
     /// Checks whether the expression has subscript or superscript.
     pub fn is_scripted(&self) -> bool {
         self.subscript.is_some() || self.supscript.is_some()
@@ -137,11 +133,26 @@ impl Expression {
         }
     }
 
+    pub(crate) fn default_with_span(span: Span) -> Self {
+        Expression {
+            interm: SimpleExpr::Var(Var {
+                kind: VarKind::Text(String::from("")),
+                span,
+            }),
+            subscript: None,
+            supscript: None,
+        }
+    }
+
     /// Returns `true` if the expression is a matrix.
     fn is_matrix(&self) -> bool {
         let SimpleExpr::Grouping(ref grp) = self.interm else {
             return false;
         };
+
+        if !grp.is_matrix_grp() {
+            return false;
+        }
 
         let mut len = 0;
 
@@ -303,12 +314,12 @@ impl IntoElements for Expression {
         };
 
         let sub = self.subscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_into_elements(),
             _ => s.into_elements(),
         });
 
         let sup = self.supscript.map(|s| match s {
-            SimpleExpr::Grouping(grp) => grp.ungroup_map(IntoElements::into_elements).collect(),
+            SimpleExpr::Grouping(grp) => grp.ungroup_into_elements(),
             _ => s.into_elements(),
         });
 
@@ -351,7 +362,7 @@ impl IntoElements for SimpleExpr {
                 }
 
                 elements.append(&mut rg);
-                elements
+                Row::from(elements).into_elements()
             }
             SimpleExpr::Unary(unary) => unary.into_elements(),
             SimpleExpr::Binary(binary) => binary.into_elements(),

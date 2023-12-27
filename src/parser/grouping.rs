@@ -1,7 +1,10 @@
-use alemat::elements::IntoElements;
+use alemat::{elements::IntoElements, Element, Elements};
 
 use crate::{
-    lexer::{keywords::groupings::Grouping, Span},
+    lexer::{
+        keywords::groupings::{Grouping, GrpCtxt},
+        Span,
+    },
     Expression,
 };
 
@@ -42,8 +45,11 @@ impl GroupingExpr {
 
     /// Returns an iterator over the group of expression inside the grouping without the grouping
     /// symbols and mapped by the given function.
-    pub(crate) fn ungroup_map<T>(self, f: impl FnMut(Expression) -> T) -> impl Iterator<Item = T> {
-        self.ungroup().into_iter().map(f)
+    pub(crate) fn ungroup_into_elements(self) -> Elements {
+        self.ungroup()
+            .into_iter()
+            .map(IntoElements::into_elements)
+            .collect()
     }
 
     /// Checks whether the grouping contains any expressions.
@@ -65,13 +71,81 @@ impl GroupingExpr {
     pub fn iter_inner(&self) -> impl Iterator<Item = &Expression> {
         self.expr.iter()
     }
+
+    /// Checks whether the grouping is one of:
+    ///
+    /// * parentheses `()`
+    /// * brackets `[]`
+    /// * braces `{}`
+    /// * ignored `{:` or `:}`
+    pub fn is_simple_grp(&self) -> bool {
+        let is_left_simple = matches!(
+            self.left_grouping,
+            Grouping::OpenParen
+                | Grouping::OpenBracket
+                | Grouping::OpenBrace
+                | Grouping::OpenIgnored
+        );
+
+        let is_right_simple = matches!(
+            self.right_grouping,
+            Grouping::CloseParen
+                | Grouping::CloseBracket
+                | Grouping::CloseBrace
+                | Grouping::CloseIgnored
+        );
+
+        is_left_simple && is_right_simple
+    }
+
+    pub(crate) fn is_matrix_grp(&self) -> bool {
+        match (self.left_grouping, self.right_grouping) {
+            // matrix can't be surrounded with both { and }
+            (Grouping::OpenBrace, Grouping::CloseBrace) => false,
+
+            (
+                Grouping::Absolute
+                | Grouping::Floor
+                | Grouping::Ceiling
+                | Grouping::NormFn
+                | Grouping::Norm,
+                _,
+            ) => false,
+            (
+                _,
+                Grouping::Absolute
+                | Grouping::Floor
+                | Grouping::Ceiling
+                | Grouping::NormFn
+                | Grouping::Norm,
+            ) => false,
+
+            _ => true,
+        }
+    }
 }
 
 impl IntoElements for GroupingExpr {
     fn into_elements(self) -> alemat::Elements {
-        self.expr
-            .into_iter()
-            .map(IntoElements::into_elements)
-            .collect()
+        let mut el = alemat::children![GrpCtxt {
+            grp: self.left_grouping,
+            is_opening: true,
+        }]
+        .into_elements();
+
+        el.append(
+            &mut self
+                .expr
+                .into_iter()
+                .map(IntoElements::into_elements)
+                .collect::<Elements>(),
+        );
+
+        el.push(Element::from(GrpCtxt {
+            grp: self.right_grouping,
+            is_opening: false,
+        }));
+
+        el
     }
 }

@@ -1,6 +1,6 @@
 ---
 source: src/lexer/tests/others.rs
-expression: "Snapshot((input, tokens))"
+expression: "Snapshot((*input, tokens))"
 ---
 int oint del grad oo |...|
 
@@ -19,7 +19,13 @@ int
                   oo
                   ^^ -> Other(Infinity) at: 18 -> 20
 
-                     |...|
-                     ^^^^^ -> Other(LowDots) at: 21 -> 26
+                     |
+                     ^ -> Other(VerticalBar) at: 21 -> 22
+
+                      ...
+                      ^^^ -> Other(LowDots) at: 22 -> 25
+
+                         |
+                         ^ -> Other(VerticalBar) at: 25 -> 26
 
 

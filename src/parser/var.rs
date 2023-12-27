@@ -37,6 +37,10 @@ pub enum VarKind {
     /// Operator, i.e. `+` or `-`.
     Operator(Operator),
 
+    /// Non-letter symbols not recognized by other keyword definitions fall back to operator, i.e.
+    /// `;` or `.`.
+    UnknownOperator(String),
+
     /// Other symbols, like comma (`,`) for example.
     Other(Other),
 
@@ -44,11 +48,9 @@ pub enum VarKind {
     Text(String),
 }
 
-impl TryFrom<Token<'_>> for VarKind {
-    type Error = ();
-
-    fn try_from(token: Token) -> Result<Self, Self::Error> {
-        let s = match token.kind() {
+impl From<Token<'_>> for VarKind {
+    fn from(token: Token) -> Self {
+        match token.kind() {
             TokenKind::Function(f) => Self::Function(f),
             TokenKind::Number => Self::Number(token.as_str().into()),
             TokenKind::Greek(g) => Self::Greek(g),
@@ -57,15 +59,14 @@ impl TryFrom<Token<'_>> for VarKind {
             TokenKind::Relation(r) => Self::Relation(r),
             TokenKind::Logical(l) => Self::Logical(l),
             TokenKind::Operator(op) => Self::Operator(op),
-            TokenKind::Other(other) if token.is_var() => match other {
+            TokenKind::UnknownOperator => Self::UnknownOperator(token.as_str().into()),
+            TokenKind::Other(other) => match other {
                 Other::Text => Self::Text(token.as_str().into()),
                 _ => Self::Other(other),
             },
 
-            _ => return Err(()),
-        };
-
-        Ok(s)
+            _ => return Self::UnknownOperator(token.as_str().into()),
+        }
     }
 }
 
@@ -84,14 +85,12 @@ impl Var {
     pub(crate) fn parse(parser: &mut AsciiMath) -> Option<Self> {
         let token = parser.iter.next()?;
 
-        if let Ok(var_kind) = VarKind::try_from(token) {
-            return Some(Self {
-                kind: var_kind,
-                span: token.span(),
-            });
-        }
+        let var_kind = VarKind::from(token);
 
-        None
+        Some(Self {
+            kind: var_kind,
+            span: token.span(),
+        })
     }
 
     /// Returns the [`Span`] occupied by this variable.
@@ -125,6 +124,7 @@ impl IntoElements for Var {
             VarKind::Other(ot) => [ot].into_elements(),
             VarKind::Text(txt) => Text::from(txt).into_elements(),
             VarKind::Number(num) => Num::from(num.as_str()).into_elements(),
+            VarKind::UnknownOperator(op) => Operator::from(op).into_elements(),
         }
     }
 }

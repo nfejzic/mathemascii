@@ -30,8 +30,8 @@ generate_impl!(
     "aleph" => Aleph,
     ":." | "therefore" => Therefore,
     ":'" | "because" => Because,
-    "|...|" | "|ldots|" => LowDots,
-    "|cdots|" => CenterDots,
+    "..." | "ldots" => LowDots,
+    "cdots" => CenterDots,
     "vdots" => VerticalDots,
     "ddots" => DiagonalDots,
     "|" => VerticalBar,
@@ -70,7 +70,7 @@ impl From<Other> for Element {
     fn from(value: Other) -> Self {
         match value {
             Other::Comma => Operator::from(",").into(),
-            Other::ForwardSlash => Operator::from("/").into(),
+            Other::ForwardSlash => Operator::solidus().into(),
             Other::Integral => Operator::integral().into(),
             Other::OIntegral => Operator::circle_integral().into(),
             Other::Partial => Operator::partial_diff().into(),
@@ -81,10 +81,10 @@ impl From<Other> for Element {
             Other::Aleph => Ident::aleph().into(),
             Other::Therefore => Operator::therefore().into(),
             Other::Because => Operator::because().into(),
-            Other::LowDots => Ident::from("...").into(),
-            Other::CenterDots => Ident::from("⋯").into(),
-            Other::VerticalDots => Ident::from("⋮").into(),
-            Other::DiagonalDots => Ident::from("⋱").into(),
+            Other::LowDots => Operator::from("...").into(),
+            Other::CenterDots => Operator::from("⋯").into(),
+            Other::VerticalDots => Operator::from("⋮").into(),
+            Other::DiagonalDots => Operator::from("⋱").into(),
             Other::VerticalBar => Operator::vert_bar().into(),
             Other::VerticalBars => alemat::row![
                 Operator::vert_bar(),
@@ -112,7 +112,9 @@ impl From<Other> for Element {
             Other::Rational => Ident::set_rational().into(),
             Other::Irrational => Ident::set_irrational().into(),
             Other::Integer => Ident::set_integer().into(),
-            _ => unreachable!("Element cannot be constructed from {:?}", value),
+
+            // Fallback to string representation
+            _ => Operator::from(value.as_ref().to_string()).into(),
         }
     }
 }

@@ -50,7 +50,7 @@ impl From<Relation> for Operator {
         match value {
             Relation::Eq => Operator::eq(),
             Relation::NotEq => Operator::not_eq(),
-            Relation::Define => Operator::from(":="),
+            Relation::Define => Operator::assign(),
             Relation::LessThan => Operator::lt(),
             Relation::GreaterThan => Operator::gt(),
             Relation::LessEqualThan => Operator::le(),

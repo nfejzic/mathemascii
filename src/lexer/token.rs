@@ -38,25 +38,6 @@ impl Token<'_> {
     pub fn as_str(&self) -> &str {
         self.content
     }
-
-    pub fn is_var(&self) -> bool {
-        match self.kind {
-            TokenKind::Function(_)
-            | TokenKind::Number
-            | TokenKind::Greek(_)
-            | TokenKind::Variable
-            | TokenKind::Arrow(_)
-            | TokenKind::Relation(_)
-            | TokenKind::Logical(_)
-            | TokenKind::Operator(_) => true,
-            TokenKind::Other(other) => !matches!(
-                other,
-                Other::Fraction | Other::Power | Other::SquareRoot | Other::Root
-            ),
-
-            _ => false,
-        }
-    }
 }
 
 /// Kind of token identified in ascii math input.
@@ -76,6 +57,10 @@ pub(crate) enum TokenKind {
 
     /// Standard operators, e.g. +, -, *, |>< etc.
     Operator(Operator),
+
+    /// Symbols that are not letters, and aren't explicitely defined in AsciiMath grammar fall back
+    /// to unknown operators.
+    UnknownOperator,
 
     /// Relations in maths, e.g. =, !=, <, <= etc.
     Relation(Relation),
@@ -100,4 +85,21 @@ pub(crate) enum TokenKind {
 
     #[default]
     Unimplemented,
+}
+
+impl TokenKind {
+    pub fn is_grouping_open(&self) -> bool {
+        let TokenKind::Grouping(grp) = self else {
+            return false;
+        };
+
+        !matches!(
+            grp,
+            Grouping::CloseParen
+                | Grouping::CloseBracket
+                | Grouping::CloseBrace
+                | Grouping::RightAngled
+                | Grouping::CloseIgnored
+        )
+    }
 }
