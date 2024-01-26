@@ -207,7 +207,7 @@ impl Expression {
             ..
         } = grp;
 
-        let first_row = expr.get(0).expect("Matrix row expected.");
+        let first_row = expr.first().expect("Matrix row expected.");
 
         // preallocate maximal number of columns
         let num_of_columns = match &first_row.interm {

@@ -11,13 +11,13 @@ This is a parser for [AsciiMath](http://asciimath.org/) written in
 ## Usage
 
 The API of this crate is designed to be as straight forward as possible. Here's
-an example: 
+an example:
 
 ```rust
 let input = "sum_(i=0)^(k * 2) a^k";
 
 // Creates an iterator over the input that yields expressions
-let ascii_math = mathemascii::parse(&input);
+let ascii_math = mathemascii::parse(input);
 
 // renders the expressions into a single `<math>` block with the default renderer
 let math_ml = mathemascii::render_mathml(ascii_math);
@@ -26,17 +26,18 @@ println!("{math_ml}");
 ```
 
 The `mathemascii` uses [`alemat`](https://github.com/nfejzic/alemat) as the
-underlying crate for generating the MathMl output. 
+underlying crate for generating the MathMl output.
 
 There's also the API where you can use custom
 [`alemat::Writer`](https://docs.rs/alemat/latest/alemat/trait.Writer.html) for
-rendering: 
+rendering:
 
 ```rust
+use alemat::{BufMathMlWriter, Writer};
 let input = "sum_(i=0)^(k * 2) a^k";
 
 // Creates an iterator over the input that yields expressions
-let ascii_math = mathemascii::parse(&input);
+let ascii_math = mathemascii::parse(input);
 
 // create a writer, here we use the default writer.
 let mut writer = BufMathMlWriter::default();
@@ -55,15 +56,16 @@ with `Result::Ok` containing the mutable reference to `Writer` passed in as the
 second parameter. This allows for in-place init of `Writer` and manipulation:
 
 ```rust
+use alemat::{BufMathMlWriter, Writer};
 let input = "sum_(i=0)^(k * 2) a^k";
 
 // Creates an iterator over the input that yields expressions
-let ascii_math = mathemascii::parse(&input);
+let ascii_math = mathemascii::parse(input);
 
 // Write the expressions into a single `<math>` block with the given writer
 let math_ml = mathemascii::write_mathml(ascii_math, &mut BufMathMlWriter::default())
-    .map(|w| w.finish()) // finish writing and output the buffer
-    .unwrap(); // unwrap the result
+  .map(|w| w.finish()) // finish writing and output the buffer
+  .unwrap(); // unwrap the result
 ```
 
 The default writer used is the `BufMathMlWriter` from alemat. This writer uses a
@@ -74,7 +76,7 @@ implementation, you may want to handle the error case.
 
 ## Examples
 
-The code shown in the usage section produces the following output: 
+The code shown in the usage section produces the following output:
 
 ```xml
 <math>
@@ -97,6 +99,6 @@ The code shown in the usage section produces the following output:
 </math>
 ```
 
-which produces the following rendering in browsers: 
+which produces the following rendering in browsers:
 
 $$\sum_{n = 0}^{k * 2}{a^k}$$

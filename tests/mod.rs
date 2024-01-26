@@ -34,3 +34,52 @@ test_snap!(vector, "((a),(b))");
 test_snap!(complex_subscripts, "lim_(N->oo) sum_(i=0)^N");
 test_snap!(integral, "int_0^1 f(x)dx");
 test_snap!(derivative, "f'(x) = dy/dx");
+
+#[test]
+fn api_test() {
+    let input = "sum_(i=0)^(k * 2) a^k";
+
+    // Creates an iterator over the input that yields expressions
+    let ascii_math = mathemascii::parse(input);
+
+    // renders the expressions into a single `<math>` block with the default renderer
+    let math_ml = mathemascii::render_mathml(ascii_math);
+
+    println!("{math_ml}");
+}
+
+#[test]
+fn api_test_2() {
+    use alemat::{BufMathMlWriter, Writer};
+    let input = "sum_(i=0)^(k * 2) a^k";
+
+    // Creates an iterator over the input that yields expressions
+    let ascii_math = mathemascii::parse(input);
+
+    // create a writer, here we use the default writer.
+    let mut writer = BufMathMlWriter::default();
+
+    // renders the expressions into a single `<math>` block and writes it into the buffer of the writer.
+    let _ = mathemascii::write_mathml(ascii_math, &mut writer);
+
+    // get the inner buffer of the writer
+    let math_ml = writer.into_inner();
+
+    println!("{math_ml}");
+}
+
+#[test]
+fn api_test_3() {
+    use alemat::{BufMathMlWriter, Writer};
+    let input = "sum_(i=0)^(k * 2) a^k";
+
+    // Creates an iterator over the input that yields expressions
+    let ascii_math = mathemascii::parse(input);
+
+    // Write the expressions into a single `<math>` block with the given writer
+    let math_ml = mathemascii::write_mathml(ascii_math, &mut BufMathMlWriter::default())
+        .map(|w| w.finish()) // finish writing and output the buffer
+        .unwrap(); // unwrap the result
+
+    println!("{math_ml}");
+}
